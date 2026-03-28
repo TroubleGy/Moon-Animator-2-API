@@ -1,0 +1,2121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moon Animator 2 — API Documentation</title>
+<meta name="description" content="Unofficial API documentation for Moon Animator 2 Roblox plugin">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cascadia+Code:wght@400;600;700&display=swap');
+
+  :root {
+    --bg-0:        #0d0d14;
+    --bg-1:        #13131f;
+    --bg-2:        #1a1a2e;
+    --bg-3:        #22223a;
+    --bg-hover:    #2a2a45;
+    --bg-selected: #312052;
+    --accent:      #c87dff;
+    --accent-dim:  #8b44cc;
+    --accent-glow: rgba(200,125,255,0.15);
+    --text-0:      #f0eaf8;
+    --text-1:      #b8a8d0;
+    --text-2:      #7a6a96;
+    --text-3:      #4a3a66;
+    --border:      #2e2e4a;
+    --border-dim:  #1e1e32;
+
+    --type-table:    #c87dff;
+    --type-function: #4ec9b0;
+    --type-string:   #ce9178;
+    --type-number:   #b5cea8;
+    --type-boolean:  #569cd6;
+    --type-instance: #9cdcfe;
+    --type-color3:   #ff6b9d;
+    --type-module:   #dcdcaa;
+    --type-window:   #4fc1ff;
+    --type-menu:     #c586c0;
+
+    --font: 'Cascadia Code', 'Cascadia Mono', Consolas, 'Courier New', monospace;
+    --radius: 6px;
+    --radius-sm: 4px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg-0);
+    color: var(--text-0);
+    line-height: 1.6;
+    font-size: 14px;
+  }
+
+  ::selection {
+    background: var(--accent-dim);
+    color: white;
+  }
+
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg-1); }
+  ::-webkit-scrollbar-thumb { background: var(--bg-3); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent-dim); }
+
+  a { color: var(--accent); text-decoration: none; transition: color 0.2s; }
+  a:hover { color: var(--text-0); text-decoration: underline; }
+
+  /* ============================================================
+     HEADER
+  ============================================================ */
+  .header {
+    background: linear-gradient(180deg, var(--bg-2) 0%, var(--bg-1) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 50% 50%, var(--accent-glow) 0%, transparent 50%);
+    animation: pulse 8s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+  }
+
+  .header-content { position: relative; z-index: 1; }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .logo-icon {
+    width: 64px;
+    height: 64px;
+    background: var(--bg-3);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    box-shadow: 0 8px 32px rgba(200,125,255,0.2);
+  }
+
+  .logo-text h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-0);
+    letter-spacing: -0.5px;
+  }
+
+  .logo-text span {
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .header-desc {
+    color: var(--text-2);
+    font-size: 16px;
+    max-width: 600px;
+    margin: 0 auto 24px;
+  }
+
+  .header-badges {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--text-1);
+  }
+
+  .badge-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  /* ============================================================
+     NAV
+  ============================================================ */
+  .nav {
+    background: var(--bg-1);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    padding: 8px 0;
+  }
+
+  .nav-link {
+    padding: 8px 16px;
+    color: var(--text-2);
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: var(--radius);
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .nav-link:hover {
+    background: var(--bg-hover);
+    color: var(--text-0);
+    text-decoration: none;
+  }
+
+  .nav-link.active {
+    background: var(--bg-selected);
+    color: var(--accent);
+  }
+
+  /* ============================================================
+     MAIN CONTENT
+  ============================================================ */
+  .main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 40px;
+  }
+
+  @media (max-width: 900px) {
+    .main { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+  }
+
+  /* ============================================================
+     SIDEBAR
+  ============================================================ */
+  .sidebar {
+    position: sticky;
+    top: 80px;
+    height: fit-content;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+  }
+
+  .sidebar-section {
+    margin-bottom: 24px;
+  }
+
+  .sidebar-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-3);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    padding-left: 12px;
+  }
+
+  .sidebar-link {
+    display: block;
+    padding: 6px 12px;
+    color: var(--text-2);
+    font-size: 13px;
+    border-radius: var(--radius-sm);
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+  }
+
+  .sidebar-link:hover {
+    background: var(--bg-hover);
+    color: var(--text-0);
+    text-decoration: none;
+    border-left-color: var(--accent-dim);
+  }
+
+  .sidebar-link.active {
+    background: var(--bg-selected);
+    color: var(--accent);
+    border-left-color: var(--accent);
+  }
+
+  /* ============================================================
+     CONTENT
+  ============================================================ */
+  .content { min-width: 0; }
+
+  .section {
+    margin-bottom: 60px;
+    scroll-margin-top: 80px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--bg-3);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-0);
+  }
+
+  .section-desc {
+    color: var(--text-2);
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+
+  h3 {
+    font-size: 18px;
+    color: var(--text-0);
+    margin: 32px 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  h3::before {
+    content: '#';
+    color: var(--accent-dim);
+    font-weight: 400;
+  }
+
+  h4 {
+    font-size: 14px;
+    color: var(--text-1);
+    margin: 20px 0 12px;
+    font-weight: 600;
+  }
+
+  p { margin-bottom: 16px; color: var(--text-1); }
+
+  /* ============================================================
+     CODE BLOCKS
+  ============================================================ */
+  .code-block {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin: 16px 0;
+    overflow-x: auto;
+    position: relative;
+  }
+
+  .code-block pre {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-1);
+  }
+
+  .code-block code {
+    font-family: var(--font);
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    background: var(--bg-3);
+    border-bottom: 1px solid var(--border);
+    border-radius: var(--radius) var(--radius) 0 0;
+    margin: 16px 0 0;
+  }
+
+  .code-header + .code-block {
+    margin-top: 0;
+    border-radius: 0 0 var(--radius) var(--radius);
+  }
+
+  .code-lang {
+    font-size: 11px;
+    color: var(--text-2);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .copy-btn {
+    background: var(--bg-hover);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-2);
+    padding: 4px 10px;
+    font-size: 11px;
+    font-family: var(--font);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .copy-btn:hover {
+    background: var(--accent-dim);
+    color: white;
+    border-color: var(--accent-dim);
+  }
+
+  code:not(pre code) {
+    background: var(--bg-3);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    color: var(--accent);
+  }
+
+  /* ============================================================
+     TABLES
+  ============================================================ */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 16px 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  th {
+    text-align: left;
+    padding: 12px 16px;
+    background: var(--bg-3);
+    color: var(--text-2);
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border-dim);
+    color: var(--text-1);
+    vertical-align: top;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  tr:hover td { background: var(--bg-hover); }
+
+  .type-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .type-table    { background: rgba(200,125,255,0.15); color: var(--type-table); }
+  .type-function { background: rgba(78,201,176,0.15);  color: var(--type-function); }
+  .type-string   { background: rgba(206,145,120,0.15); color: var(--type-string); }
+  .type-number   { background: rgba(181,206,168,0.15); color: var(--type-number); }
+  .type-boolean  { background: rgba(86,156,214,0.15);  color: var(--type-boolean); }
+  .type-module   { background: rgba(220,220,170,0.15); color: var(--type-module); }
+  .type-window   { background: rgba(79,193,255,0.15);  color: var(--type-window); }
+  .type-menu     { background: rgba(197,134,192,0.15); color: var(--type-menu); }
+
+  /* ============================================================
+     CARDS
+  ============================================================ */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+  }
+
+  .card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    transition: all 0.2s;
+  }
+
+  .card:hover {
+    border-color: var(--accent-dim);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+
+  .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-0);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: var(--text-2);
+    margin-bottom: 12px;
+  }
+
+  .card-meta {
+    display: flex;
+    gap: 12px;
+    font-size: 11px;
+    color: var(--text-3);
+  }
+
+  .card-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* ============================================================
+     EASING GRID
+  ============================================================ */
+  .easing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 8px;
+    margin: 16px 0;
+  }
+
+  .easing-item {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    font-size: 12px;
+    color: var(--text-1);
+    transition: all 0.15s;
+    cursor: default;
+  }
+
+  .easing-item:hover {
+    border-color: var(--accent-dim);
+    background: var(--bg-hover);
+  }
+
+  .easing-item.header {
+    background: var(--bg-3);
+    color: var(--text-2);
+    font-weight: 600;
+  }
+
+  /* ============================================================
+     WINDOW CARDS
+  ============================================================ */
+  .window-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+  }
+
+  .window-card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    transition: all 0.2s;
+  }
+
+  .window-card:hover {
+    border-color: var(--accent-dim);
+  }
+
+  .window-name {
+    font-weight: 700;
+    color: var(--type-window);
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+
+  .window-size {
+    font-size: 11px;
+    color: var(--text-3);
+    display: flex;
+    gap: 16px;
+  }
+
+  .window-size span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* ============================================================
+     ALERTS
+  ============================================================ */
+  .alert {
+    padding: 16px 20px;
+    border-radius: var(--radius);
+    margin: 20px 0;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .alert-icon { flex-shrink: 0; margin-top: 2px; }
+
+  .alert-info {
+    background: rgba(79,193,255,0.1);
+    border: 1px solid rgba(79,193,255,0.3);
+    color: var(--type-window);
+  }
+
+  .alert-warning {
+    background: rgba(255,193,7,0.1);
+    border: 1px solid rgba(255,193,7,0.3);
+    color: #ffc107;
+  }
+
+  .alert-tip {
+    background: rgba(78,201,176,0.1);
+    border: 1px solid rgba(78,201,176,0.3);
+    color: var(--type-function);
+  }
+
+  /* ============================================================
+     FOOTER
+  ============================================================ */
+  .footer {
+    background: var(--bg-1);
+    border-top: 1px solid var(--border);
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--text-3);
+    font-size: 12px;
+  }
+
+  .footer a { color: var(--accent); }
+
+  /* ============================================================
+     SYNTAX HIGHLIGHTING
+  ============================================================ */
+  .syn-keyword { color: var(--type-menu); }
+  .syn-function { color: var(--type-function); }
+  .syn-string { color: var(--type-string); }
+  .syn-number { color: var(--type-number); }
+  .syn-comment { color: var(--text-3); font-style: italic; }
+  .syn-property { color: var(--type-window); }
+  .syn-global { color: var(--accent); }
+
+  /* ============================================================
+     SEARCH
+  ============================================================ */
+  .search-box {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    transition: all 0.2s;
+  }
+
+  .search-box:focus-within {
+    border-color: var(--accent-dim);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+
+  .search-box input {
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text-0);
+    font-family: var(--font);
+    font-size: 14px;
+    width: 100%;
+  }
+
+  .search-box input::placeholder { color: var(--text-3); }
+
+  .search-box svg { color: var(--text-2); flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     HEADER
+============================================================ -->
+<header class="header">
+  <div class="header-content">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <h1>Moon Animator 2</h1>
+        <span>API Documentation</span>
+      </div>
+    </div>
+    <p class="header-desc">
+      Unofficial API reference for Moon Animator 2 — the powerful animation plugin for Roblox Studio. 
+      Access internal functions, windows, easings, and more via <code>_G.MoonGlobal</code>
+    </p>
+    <div class="header-badges">
+      <div class="badge"><div class="badge-dot"></div> Version 34000</div>
+      <div class="badge">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+        Lua / Luau
+      </div>
+      <div class="badge">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
+        </svg>
+        Unofficial
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================
+     NAV
+============================================================ -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#getting-started" class="nav-link active">Getting Started</a>
+    <a href="#easings" class="nav-link">Easing Functions</a>
+    <a href="#windows" class="nav-link">Windows</a>
+    <a href="#menus" class="nav-link">Menus</a>
+    <a href="#constants" class="nav-link">Constants</a>
+    <a href="#classes" class="nav-link">Classes</a>
+    <a href="#themer" class="nav-link">Themer</a>
+    <a href="#modding" class="nav-link">Plugin Modding</a>
+  </div>
+</nav>
+
+<!-- ============================================================
+     MAIN CONTENT
+============================================================ -->
+<main class="main">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-title">Getting Started</div>
+      <a href="#getting-started" class="sidebar-link">Introduction</a>
+      <a href="#access-point" class="sidebar-link">Access Point</a>
+      <a href="#structure" class="sidebar-link">Structure Overview</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">API Reference</div>
+      <a href="#easings" class="sidebar-link">Easing Functions</a>
+      <a href="#windows" class="sidebar-link">Windows</a>
+      <a href="#menus" class="sidebar-link">Menus</a>
+      <a href="#constants" class="sidebar-link">Constants</a>
+      <a href="#classes" class="sidebar-link">Classes</a>
+      <a href="#themer" class="sidebar-link">Themer</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">Modding</div>
+      <a href="#modding" class="sidebar-link">Plugin Modding</a>
+      <a href="#custom-easings" class="sidebar-link">Custom Easings</a>
+      <a href="#theme-unlock" class="sidebar-link">Theme Unlocker</a>
+    </div>
+  </aside>
+
+  <!-- Content -->
+  <div class="content">
+    
+    <!-- ============================================================
+         GETTING STARTED
+    ============================================================ -->
+    <section id="getting-started" class="section">
+      <div class="section-header">
+        <div class="section-icon" style="color: var(--accent);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <h2 class="section-title">Getting Started</h2>
+      </div>
+
+      <p class="section-desc">
+        Moon Animator 2 exposes its internal API through a global table, allowing plugin developers 
+        to extend functionality, create custom tools, and automate animation workflows.
+      </p>
+
+      <div class="alert alert-warning">
+        <div class="alert-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </div>
+        <div>
+          <strong>Unofficial Documentation</strong><br>
+          This API is not officially documented by Moon Animator developers. 
+          Structure may change between versions. Use at your own risk.
+        </div>
+      </div>
+
+      <h3 id="access-point">Access Point</h3>
+      <p>All Moon Animator internals are accessible through the global table:</p>
+
+      <div class="code-header">
+        <span class="code-lang">Lua</span>
+        <button class="copy-btn" onclick="copyCode(this)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+          </svg>
+          Copy
+        </button>
+      </div>
+      <div class="code-block">
+<pre><code><span class="syn-keyword">local</span> _g = <span class="syn-global">_G</span>.MoonGlobal
+
+<span class="syn-comment">-- Wait for Moon Animator to fully load</span>
+<span class="syn-keyword">repeat</span>
+    _g = <span class="syn-global">_G</span>.MoonGlobal
+    <span class="syn-function">task.wait</span>(<span class="syn-number">0.5</span>)
+<span class="syn-keyword">until</span> _g <span class="syn-keyword">and</span> _g.ready
+
+<span class="syn-function">print</span>(<span class="syn-string">"Moon Animator version:"</span>, _g.ver) <span class="syn-comment">-- 34000</span></code></pre>
+      </div>
+
+      <h3 id="structure">Structure Overview</h3>
+      <p>The <code>_G.MoonGlobal</code> table contains these main categories:</p>
+
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--type-function)" stroke-width="2">
+              <path d="M18 20V10M12 20V4M6 20v-6"/>
+            </svg>
+            EasingFunctions
+          </div>
+          <div class="card-desc">All interpolation functions for smooth animations</div>
+          <div class="card-meta">
+            <span><span class="type-badge type-function">function</span></span>
+            <span>44 functions</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--type-window)" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <line x1="3" y1="9" x2="21" y2="9"/>
+            </svg>
+            Windows
+          </div>
+          <div class="card-desc">UI windows and dialog configurations</div>
+          <div class="card-meta">
+            <span><span class="type-badge type-window">table</span></span>
+            <span>28 windows</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--type-menu)" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+            AllMenus
+          </div>
+          <div class="card-desc">Context menus and menu bar items</div>
+          <div class="card-meta">
+            <span><span class="type-badge type-menu">table</span></span>
+            <span>15 menus</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--type-module)" stroke-width="2">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+            class
+          </div>
+          <div class="card-desc">ModuleScript references for core functionality</div>
+          <div class="card-meta">
+            <span><span class="type-badge type-module">ModuleScript</span></span>
+            <span>50+ classes</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         EASING FUNCTIONS
+    ============================================================ -->
+    <section id="easings" class="section">
+      <div class="section-header">
+        <div class="section-icon" style="color: var(--type-function);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+          </svg>
+        </div>
+        <h2 class="section-title">Easing Functions</h2>
+      </div>
+
+      <p class="section-desc">
+        Easing functions control animation interpolation. Each function takes a progress value <code>t</code> (0-1) 
+        and returns the eased value (0-1).
+      </p>
+
+      <div class="code-header">
+        <span class="code-lang">Lua</span>
+        <button class="copy-btn" onclick="copyCode(this)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+          </svg>
+          Copy
+        </button>
+      </div>
+      <div class="code-block">
+<pre><code><span class="syn-keyword">local</span> _g = <span class="syn-global">_G</span>.MoonGlobal
+<span class="syn-keyword">local</span> progress = <span class="syn-number">0.5</span>
+
+<span class="syn-comment">-- Get eased value</span>
+<span class="syn-keyword">local</span> eased = _g.EasingFunctions.<span class="syn-function">QuadOut</span>(progress)
+<span class="syn-function">print</span>(eased) <span class="syn-comment">-- 0.75</span></code></pre>
+      </div>
+
+      <h3>Direction Types</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Direction</th><th>Description</th><th>Curve</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>In</code></td>
+              <td>Starts slow, accelerates</td>
+              <td>⟋ (ease in)</td>
+            </tr>
+            <tr>
+              <td><code>Out</code></td>
+              <td>Starts fast, decelerates</td>
+              <td>⟍ (ease out)</td>
+            </tr>
+            <tr>
+              <td><code>InOut</code></td>
+              <td>Slow start and end, fast middle</td>
+              <td>S-curve</td>
+            </tr>
+            <tr>
+              <td><code>OutIn</code></td>
+              <td>Fast start and end, slow middle</td>
+              <td>Inverse S-curve</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Standard Easings</h3>
+      <p>All standard easings have <code>In</code>, <code>Out</code>, <code>InOut</code>, and <code>OutIn</code> variants:</p>
+
+      <div class="easing-grid">
+        <div class="easing-item header">Name</div>
+        <div class="easing-item header">Power/Type</div>
+        <div class="easing-item">Sine</div>
+        <div class="easing-item">Sinusoidal</div>
+        <div class="easing-item">Quad</div>
+        <div class="easing-item">Power of 2</div>
+        <div class="easing-item">Cubic</div>
+        <div class="easing-item">Power of 3</div>
+        <div class="easing-item">Quart</div>
+        <div class="easing-item">Power of 4</div>
+        <div class="easing-item">Quint</div>
+        <div class="easing-item">Power of 5</div>
+        <div class="easing-item">Sextic</div>
+        <div class="easing-item">Power of 6</div>
+        <div class="easing-item">Expo</div>
+        <div class="easing-item">Exponential</div>
+        <div class="easing-item">Circ</div>
+        <div class="easing-item">Circular</div>
+        <div class="easing-item">Back</div>
+        <div class="easing-item">Overshoot</div>
+        <div class="easing-item">Elastic</div>
+        <div class="easing-item">Spring-like</div>
+        <div class="easing-item">Bounce</div>
+        <div class="easing-item">Bouncing</div>
+      </div>
+
+      <h3>Special Easings</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Function</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>Linear</code></td>
+              <td>No easing, constant speed (returns input unchanged)</td>
+            </tr>
+            <tr>
+              <td><code>Constant</code></td>
+              <td>No interpolation, instant jump to target value</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Full Function List</h3>
+      <div class="code-block">
+<pre><code><span class="syn-comment">-- Special</span>
+Linear, Constant
+
+<span class="syn-comment">-- Standard (each has In/Out/InOut/OutIn)</span>
+SineIn, SineOut, SineInOut, SineOutIn
+QuadIn, QuadOut, QuadInOut, QuadOutIn
+CubicIn, CubicOut, CubicInOut, CubicOutIn
+QuartIn, QuartOut, QuartInOut, QuartOutIn
+QuintIn, QuintOut, QuintInOut, QuintOutIn
+SexticIn, SexticOut, SexticInOut, SexticOutIn
+ExpoIn, ExpoOut, ExpoInOut, ExpoOutIn
+CircIn, CircOut, CircInOut, CircOutIn
+BackIn, BackOut, BackInOut, BackOutIn
+ElasticIn, ElasticOut, ElasticInOut, ElasticOutIn
+BounceIn, BounceOut, BounceInOut, BounceOutIn</code></pre>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         WINDOWS
+    ============================================================ -->
+    <section id="windows" class="section">
+      <div class="section-header">
+        <div class="section-icon" style="color: var(--type-window);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <line x1="3" y1="9" x2="21" y2="9"/>
+          </svg>
+        </div>
+        <h2 class="section-title">Windows</h2>
+      </div>
+
+      <p class="section-desc">
+        Window objects contain UI configuration and state. Each window has visibility control, 
+        size constraints, and access to its UI frame.
+      </p>
+
+      <h3>Window Properties</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>.Visible</code></td>
+              <td><span class="type-badge type-boolean">boolean</span></td>
+              <td>Current visibility state</td>
+            </tr>
+            <tr>
+              <td><code>.MinSize</code></td>
+              <td><span class="type-badge type-table">table</span></td>
+              <td>Minimum dimensions <code>{x, y}</code></td>
+            </tr>
+            <tr>
+              <td><code>.DefaultSize</code></td>
+              <td><span class="type-badge type-table">table</span></td>
+              <td>Default dimensions <code>{x, y}</code></td>
+            </tr>
+            <tr>
+              <td><code>.name</code></td>
+              <td><span class="type-badge type-string">string</span></td>
+              <td>Internal window identifier</td>
+            </tr>
+            <tr>
+              <td><code>.UI</code></td>
+              <td><span class="type-badge type-table">Frame</span></td>
+              <td>Main UI frame (when available)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Main Window</h3>
+      <div class="window-grid">
+        <div class="window-card">
+          <div class="window-name">MoonAnimator</div>
+          <div class="card-desc">Main timeline and animation controls</div>
+          <div class="window-size">
+            <span>📐 Default: 532×306</span>
+            <span>📏 Min: 420×138</span>
+          </div>
+        </div>
+      </div>
+
+      <h3>Animation Windows</h3>
+      <div class="window-grid">
+        <div class="window-card">
+          <div class="window-name">AnimationSettings</div>
+          <div class="card-desc">FPS, length, properties</div>
+          <div class="window-size"><span>205×202</span></div>
+        </div>
+        <div class="window-card">
+          <div class="window-name">EditKeyframes</div>
+          <div class="card-desc">Keyframe editing panel</div>
+          <div class="window-size"><span>294×451</span></div>
+        </div>
+        <div class="window-card">
+          <div class="window-name">EditKeyframes_Ease</div>
+          <div class="card-desc">Easing selection UI</div>
+          <div class="window-size"><span>294×451</span></div>
+        </div>
+        <div class="window-card">
+          <div class="window-name">EditKeyframes_Value</div>
+          <div class="card-desc">Value editing for keyframes</div>
+          <div class="window-size"><span>242×244</span></div>
+        </div>
+        <div class="window-card">
+          <div class="window-name">EditMarkers</div>
+          <div class="card-desc">Timeline markers</div>
+          <div class="window-size"><span>277×228</span></div>
+        </div>
+      </div>
+
+      <h3>Frame Operations</h3>
+      <div class="window-grid">
+        <div class="window-card">
+          <div class="window-name">FillFrames</div>
+          <div class="card-desc">Fill with interpolated values</div>
+          <div class="window-size"><span>242×290</span></div>
+        </div>
+        <div class="window-card">
+          <div class="window-name">RepeatFrames</div>
+          <div class="card-desc">Loop frame sequences</div>
+          <div class="window-size"><span>204×184</span></div>
+        </div>
+        <div class="window-card">
+          <div class="window-name">StretchFrames</div>
+          <div class="card-desc">Time-stretch sequences</div>
+          <div class="window-size"><span>204×172</span></div>
+        </div>
+        <div class="window-card">
+          <div class="window-name">FrameOffset</div>
+          <div class="card-desc">Offset frames in time</div>
+          <div class="window-size"><span>178×108</span></div>
+        </div>
+        <div class="window-card">
+          <div class="window-name">SplitKFVal</div>
+          <div class="card-desc">Split keyframe values</div>
+          <div class="window-size"><span>128×108</span></div>
+        </div>
+      </div>
+
+      <h3>Item Windows</h3>
+      <div class="window-grid">
+        <div class="window-card">
+          <div class="window-name">AddItem</div>
+          <div class="card-desc">Add new animation items</div>
+          <div class="window-size"><span>204×270</span></div>
+        </div>
+        <div class="window-card">
+          <div class="window-name">EditItem</div>
+          <div class="card-desc">Edit item properties</div>
+          <div class="window-size"><span>204×270</span></div>
+        </div>
+        <div class="window-card">
+          <div class="window-name">JumpToItem</div>
+          <div class="card-desc">Quick navigation</div>
+          <div class="window-size"><span>204×108</span></div>
+        </div>
+        <div class="window-card">
+          <div class="window-name">Ungroup</div>
+          <div class="card-desc">Ungroup items</div>
+          <div class="window-size"><span>228×216</span></div>
+        </div>
+      </div>
+
+      <h3>Import/Export</h3>
+      <div class="window-grid">
+        <div class="window-card">
+          <div class="window-name">Import</div>
+          <div class="card-desc">Import animations</div>
+          <div class="window-size"><span>204×312</span></div>
+        </div>
+        <div class="window-card">
+          <div class="window-name">IdImport</div>
+          <div class="card-desc">Import by asset ID</div>
+          <div class="window-size"><span>204×108</span></div>
+        </div>
+        <div class="window-card">
+          <div class="window-name">ExportFiles</div>
+          <div class="card-desc">Export animation files</div>
+          <div class="window-size"><span>187×126</span></div>
+        </div>
+        <div class="window-card">
+          <div class="window-name">SaveAs</div>
+          <div class="card-desc">Save with new name</div>
+          <div class="window-size"><span>204×108</span></div>
+        </div>
+      </div>
+
+      <h3>Utility Windows</h3>
+      <div class="window-grid">
+        <div class="window-card">
+          <div class="window-name">CharacterInserter</div>
+          <div class="card-desc">Insert character rigs</div>
+          <div class="window-size"><span>470×228</span></div>
+        </div>
+        <div class="window-card">
+          <div class="window-name">Welder</div>
+          <div class="card-desc">Weld parts together</div>
+          <div class="window-size"><span>285×190</span></div>
+        </div>
+        <div class="window-card">
+          <div class="window-name">ColorPicker</div>
+          <div class="card-desc">Color selection</div>
+          <div class="window-size"><span>401×350</span></div>
+        </div>
+        <div class="window-card">
+          <div class="window-name">CameraRef</div>
+          <div class="card-desc">Camera reference settings</div>
+          <div class="window-size"><span>204×129</span></div>
+        </div>
+        <div class="window-card">
+          <div class="window-name">CameraRotation</div>
+          <div class="card-desc">Camera rotation controls</div>
+          <div class="window-size"><span>130×148</span></div>
+        </div>
+      </div>
+
+      <h3>Theme/UI Windows</h3>
+      <div class="window-grid">
+        <div class="window-card">
+          <div class="window-name">EditTheme</div>
+          <div class="card-desc">Theme customization</div>
+          <div class="window-size"><span>204×210</span></div>
+        </div>
+        <div class="window-card">
+          <div class="window-name">Activate</div>
+          <div class="card-desc">Activation/purchase</div>
+          <div class="window-size"><span>429×394</span></div>
+        </div>
+        <div class="window-card">
+          <div class="window-name">Supporters</div>
+          <div class="card-desc">Supporter credits</div>
+          <div class="window-size"><span>290×200</span></div>
+        </div>
+        <div class="window-card">
+          <div class="window-name">MsgBox</div>
+          <div class="card-desc">Message dialogs</div>
+          <div class="window-size"><span>224×128</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MENUS
+    ============================================================ -->
+    <section id="menus" class="section">
+      <div class="section-header">
+        <div class="section-icon" style="color: var(--type-menu);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </div>
+        <h2 class="section-title">Menus</h2>
+      </div>
+
+      <p class="section-desc">
+        Menu objects provide access to Moon Animator's context menus and menu bar items.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Menu Name</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>fileMain</code></td><td>File operations (save, load, export)</td></tr>
+            <tr><td><code>editMain</code></td><td>Edit operations (copy, paste, undo)</td></tr>
+            <tr><td><code>frameMain</code></td><td>Frame operations menu</td></tr>
+            <tr><td><code>keyframeMain</code></td><td>Keyframe operations menu</td></tr>
+            <tr><td><code>itemMain</code></td><td>Item operations menu</td></tr>
+            <tr><td><code>cameraMain</code></td><td>Camera controls menu</td></tr>
+            <tr><td><code>RigMenu</code></td><td>Rig-specific options</td></tr>
+            <tr><td><code>GizmoMenu</code></td><td>Transform gizmo options</td></tr>
+            <tr><td><code>HandlesMenu</code></td><td>Handle display options</td></tr>
+            <tr><td><code>EffectsMenu</code></td><td>Visual effects menu</td></tr>
+            <tr><td><code>settingsMain</code></td><td>Settings menu</td></tr>
+            <tr><td><code>other</code></td><td>Miscellaneous options</td></tr>
+            <tr><td><code>h_theme</code></td><td>Theme header</td></tr>
+            <tr><td><code>theme_list</code></td><td>Available themes list</td></tr>
+            <tr><td><code>split_menu</code></td><td>Split operations submenu</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-header">
+        <span class="code-lang">Lua</span>
+        <button class="copy-btn" onclick="copyCode(this)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+          </svg>
+          Copy
+        </button>
+      </div>
+      <div class="code-block">
+<pre><code><span class="syn-keyword">local</span> _g = <span class="syn-global">_G</span>.MoonGlobal
+
+<span class="syn-comment">-- Access a menu</span>
+<span class="syn-keyword">local</span> fileMenu = _g.AllMenus.fileMain
+<span class="syn-function">print</span>(fileMenu.name) <span class="syn-comment">-- "fileMain"</span>
+
+<span class="syn-comment">-- Access menu items</span>
+<span class="syn-keyword">local</span> menuItems = _g.AllMenuItems
+<span class="syn-keyword">for</span> name, item <span class="syn-keyword">in</span> <span class="syn-function">pairs</span>(menuItems) <span class="syn-keyword">do</span>
+    <span class="syn-function">print</span>(name, item.middle_ui)
+<span class="syn-keyword">end</span></code></pre>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CONSTANTS
+    ============================================================ -->
+    <section id="constants" class="section">
+      <div class="section-header">
+        <div class="section-icon" style="color: var(--type-number);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="4" y1="9" x2="20" y2="9"/>
+            <line x1="4" y1="15" x2="20" y2="15"/>
+            <line x1="10" y1="3" x2="8" y2="21"/>
+            <line x1="16" y1="3" x2="14" y2="21"/>
+          </svg>
+        </div>
+        <h2 class="section-title">Constants</h2>
+      </div>
+
+      <p class="section-desc">
+        Configuration constants and runtime settings accessible directly on <code>_G.MoonGlobal</code>.
+      </p>
+
+      <h3>Frame Limits</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Constant</th><th>Value</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>MIN_FRAMES</code></td>
+              <td><span class="type-badge type-number">60</span></td>
+              <td>Minimum animation length</td>
+            </tr>
+            <tr>
+              <td><code>MAX_FRAMES</code></td>
+              <td><span class="type-badge type-number">216000</span></td>
+              <td>Maximum animation length (1 hour at 60fps)</td>
+            </tr>
+            <tr>
+              <td><code>DEFAULT_FRAMES</code></td>
+              <td><span class="type-badge type-number">300</span></td>
+              <td>Default animation length (5 seconds at 60fps)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Timing</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Property</th><th>Default</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>DEFAULT_FPS</code></td>
+              <td><span class="type-badge type-number">60</span></td>
+              <td>Default frames per second</td>
+            </tr>
+            <tr>
+              <td><code>current_fps</code></td>
+              <td><span class="type-badge type-number">120</span></td>
+              <td>Current FPS setting (mutable)</td>
+            </tr>
+            <tr>
+              <td><code>DOUBLE_CLICC_TIME</code></td>
+              <td><span class="type-badge type-number">0.5</span></td>
+              <td>Double-click detection threshold (seconds)</td>
+            </tr>
+            <tr>
+              <td><code>time_offset</code></td>
+              <td><span class="type-badge type-number">0</span></td>
+              <td>Playback time offset</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Handle Settings</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Property</th><th>Default</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>show_part_handles</code></td>
+              <td><span class="type-badge type-boolean">true</span></td>
+              <td>Show part manipulation handles</td>
+            </tr>
+            <tr>
+              <td><code>show_bone_cones</code></td>
+              <td><span class="type-badge type-boolean">false</span></td>
+              <td>Show bone direction cones</td>
+            </tr>
+            <tr>
+              <td><code>show_bone_spheres</code></td>
+              <td><span class="type-badge type-boolean">false</span></td>
+              <td>Show bone joint spheres</td>
+            </tr>
+            <tr>
+              <td><code>full_part_handles</code></td>
+              <td><span class="type-badge type-boolean">true</span></td>
+              <td>Full handle display mode</td>
+            </tr>
+            <tr>
+              <td><code>scale_handles</code></td>
+              <td><span class="type-badge type-boolean">false</span></td>
+              <td>Show scale handles</td>
+            </tr>
+            <tr>
+              <td><code>no_hide_handles</code></td>
+              <td><span class="type-badge type-boolean">false</span></td>
+              <td>Prevent auto-hiding handles</td>
+            </tr>
+            <tr>
+              <td><code>bone_handle_size</code></td>
+              <td><span class="type-badge type-number">1</span></td>
+              <td>Bone handle scale multiplier</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Other</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Property</th><th>Value</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>ver</code></td>
+              <td><span class="type-badge type-number">34000</span></td>
+              <td>Moon Animator version number</td>
+            </tr>
+            <tr>
+              <td><code>ready</code></td>
+              <td><span class="type-badge type-boolean">true</span></td>
+              <td>Plugin fully loaded flag</td>
+            </tr>
+            <tr>
+              <td><code>use_last_ease</code></td>
+              <td><span class="type-badge type-boolean">true</span></td>
+              <td>Remember last used easing</td>
+            </tr>
+            <tr>
+              <td><code>theme_key</code></td>
+              <td><span class="type-badge type-string">"MoonAnimator2_Colors"</span></td>
+              <td>Settings key for theme storage</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CLASSES
+    ============================================================ -->
+    <section id="classes" class="section">
+      <div class="section-header">
+        <div class="section-icon" style="color: var(--type-module);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+        </div>
+        <h2 class="section-title">Classes</h2>
+      </div>
+
+      <p class="section-desc">
+        The <code>class</code> table contains references to ModuleScripts that can be required for core functionality.
+      </p>
+
+      <div class="code-header">
+        <span class="code-lang">Lua</span>
+        <button class="copy-btn" onclick="copyCode(this)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+          </svg>
+          Copy
+        </button>
+      </div>
+      <div class="code-block">
+<pre><code><span class="syn-keyword">local</span> _g = <span class="syn-global">_G</span>.MoonGlobal
+
+<span class="syn-comment">-- Require a class module</span>
+<span class="syn-keyword">local</span> Ease = <span class="syn-function">require</span>(_g.class.Ease)
+<span class="syn-keyword">local</span> Button = <span class="syn-function">require</span>(_g.class.Button)
+<span class="syn-keyword">local</span> Menu = <span class="syn-function">require</span>(_g.class.Menu)</code></pre>
+      </div>
+
+      <h3>Track Classes</h3>
+      <p>Animation track types for different properties:</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Class</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>MotorTrack</code></td><td>Motor6D joint animation</td></tr>
+            <tr><td><code>RigCFrameTrack</code></td><td>Rig CFrame animation</td></tr>
+            <tr><td><code>ModelCFrameTrack</code></td><td>Model CFrame animation</td></tr>
+            <tr><td><code>ModelScaleTrack</code></td><td>Model scale animation</td></tr>
+            <tr><td><code>ModelColorTrack</code></td><td>Model color animation</td></tr>
+            <tr><td><code>ModelTransparencyTrack</code></td><td>Model transparency animation</td></tr>
+            <tr><td><code>CameraCFrameTrack</code></td><td>Camera position/rotation</td></tr>
+            <tr><td><code>CameraLookAtPartTrack</code></td><td>Camera look-at target</td></tr>
+            <tr><td><code>CameraAttachToPartTrack</code></td><td>Camera attachment</td></tr>
+            <tr><td><code>LightingClockTimeTrack</code></td><td>Lighting time of day</td></tr>
+            <tr><td><code>BasePartApplyMeshTrack</code></td><td>Mesh deformation</td></tr>
+            <tr><td><code>MarkerTrack</code></td><td>Timeline markers</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Sound Tracks</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Class</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>SoundPlayTrack</code></td><td>Play sound</td></tr>
+            <tr><td><code>SoundPlayOnceTrack</code></td><td>Play sound once (no loop)</td></tr>
+            <tr><td><code>SoundPauseTrack</code></td><td>Pause sound</td></tr>
+            <tr><td><code>SoundResumeTrack</code></td><td>Resume sound</td></tr>
+            <tr><td><code>SoundStopTrack</code></td><td>Stop sound</td></tr>
+            <tr><td><code>SoundSetTimeTrack</code></td><td>Set sound playback position</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Humanoid Tracks</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Class</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>HumanoidAddAccessoryTrack</code></td><td>Add accessory to humanoid</td></tr>
+            <tr><td><code>HumanoidRemoveAccessoriesTrack</code></td><td>Remove accessories</td></tr>
+            <tr><td><code>HumanoidUnequipToolsTrack</code></td><td>Unequip tools</td></tr>
+            <tr><td><code>HumanoidPlayEmoteTrack</code></td><td>Play emote animation</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>UI Input Classes</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Class</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>TextInput</code></td><td>Text input field</td></tr>
+            <tr><td><code>AngleInput</code></td><td>Angle/rotation input</td></tr>
+            <tr><td><code>VectorInput</code></td><td>Vector3 input</td></tr>
+            <tr><td><code>CFrameInput</code></td><td>CFrame input</td></tr>
+            <tr><td><code>EaseInput</code></td><td>Easing selection input</td></tr>
+            <tr><td><code>ListInput</code></td><td>Dropdown list input</td></tr>
+            <tr><td><code>InputList</code></td><td>List of inputs</td></tr>
+            <tr><td><code>KeyValueList</code></td><td>Key-value pair list</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>UI Component Classes</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Class</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>Button</code></td><td>Clickable button</td></tr>
+            <tr><td><code>Radio</code></td><td>Radio button group</td></tr>
+            <tr><td><code>Menu</code></td><td>Context menu</td></tr>
+            <tr><td><code>MenuItem</code></td><td>Menu item</td></tr>
+            <tr><td><code>MenuBar</code></td><td>Menu bar container</td></tr>
+            <tr><td><code>SelectGrid</code></td><td>Selection grid</td></tr>
+            <tr><td><code>MoonScroll</code></td><td>Scrolling container</td></tr>
+            <tr><td><code>Graph</code></td><td>Graph/curve display</td></tr>
+            <tr><td><code>ValueTitle</code></td><td>Value with title label</td></tr>
+            <tr><td><code>ImageList</code></td><td>Image list display</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Core Classes</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Class</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>Ease</code></td>
+              <td>Easing functions and metadata (<code>.EASE_DATA</code>, <code>.EASE_LIST</code>)</td>
+            </tr>
+            <tr><td><code>ItemObject</code></td><td>Animation item wrapper</td></tr>
+            <tr><td><code>TrackItem</code></td><td>Track item wrapper</td></tr>
+            <tr><td><code>ObjectGroup</code></td><td>Grouped objects</td></tr>
+            <tr><td><code>Marker</code></td><td>Timeline marker</td></tr>
+            <tr><td><code>Path</code></td><td>Path/spline utilities</td></tr>
+            <tr><td><code>GuiElement</code></td><td>Base GUI element</td></tr>
+            <tr><td><code>SelectionHandler</code></td><td>Selection management</td></tr>
+            <tr><td><code>LayerHandler</code></td><td>Layer management</td></tr>
+            <tr><td><code>LayerSystem</code></td><td>Layer system core</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         THEMER
+    ============================================================ -->
+    <section id="themer" class="section">
+      <div class="section-header">
+        <div class="section-icon" style="color: var(--type-color3);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 2a10 10 0 000 20z" fill="currentColor" opacity="0.3"/>
+          </svg>
+        </div>
+        <h2 class="section-title">Themer</h2>
+      </div>
+
+      <p class="section-desc">
+        The Themer handles all color/theme management for Moon Animator's UI.
+      </p>
+
+      <h3>Key Properties</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>_Theme</code></td>
+              <td><span class="type-badge type-table">table</span></td>
+              <td>Current theme colors (Color3 values)</td>
+            </tr>
+            <tr>
+              <td><code>_BuiltInThemes</code></td>
+              <td><span class="type-badge type-table">table</span></td>
+              <td>All built-in themes (RGB arrays: {R, G, B})</td>
+            </tr>
+            <tr>
+              <td><code>_PaintMap</code></td>
+              <td><span class="type-badge type-table">table</span></td>
+              <td>Property → theme key mapping</td>
+            </tr>
+            <tr>
+              <td><code>_PaintedItemMap</code></td>
+              <td><span class="type-badge type-table">table</span></td>
+              <td>Painted UI elements</td>
+            </tr>
+            <tr>
+              <td><code>theme_buttons</code></td>
+              <td><span class="type-badge type-table">table</span></td>
+              <td>Theme selection buttons</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Key Methods</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Method</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>:SetTheme(name)</code></td>
+              <td>Apply a theme by name</td>
+            </tr>
+            <tr>
+              <td><code>:_paintAll()</code></td>
+              <td>Repaint all UI elements with current theme</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Built-in Themes</h3>
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-title" style="color: var(--type-function);">Free Themes</div>
+          <div class="card-desc">Default, Dark, Light, and others included with Moon Animator</div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="color: var(--type-color3);">Paid Themes</div>
+          <div class="card-desc">Taiga, Blush, Blonde, Wheat, Gaia, Ares, Aqua, Energy, Digital, Fuchsia</div>
+        </div>
+      </div>
+
+            <div class="alert alert-info">
+        <div class="alert-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+        </div>
+        <div>
+          <strong>Theme Color Format</strong><br>
+          Built-in themes store colors as <code>{R, G, B}</code> arrays (0-255 range).<br>
+          Runtime <code>_Theme</code> uses <code>Color3</code> objects. Convert with <code>Color3.fromRGB()</code>.
+        </div>
+      </div>
+
+      <div class="code-header">
+        <span class="code-lang">Lua</span>
+        <button class="copy-btn" onclick="copyCode(this)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+          </svg>
+          Copy
+        </button>
+      </div>
+      <div class="code-block">
+<pre><code><span class="syn-keyword">local</span> _g = <span class="syn-global">_G</span>.MoonGlobal
+<span class="syn-keyword">local</span> T = _g.Themer
+
+<span class="syn-comment">-- Get current theme color</span>
+<span class="syn-keyword">local</span> mainColor = T._Theme.main
+<span class="syn-function">print</span>(mainColor) <span class="syn-comment">-- Color3 value</span>
+
+<span class="syn-comment">-- Get built-in theme data (RGB arrays)</span>
+<span class="syn-keyword">local</span> taigaTheme = T._BuiltInThemes[<span class="syn-string">"Taiga"</span>]
+<span class="syn-keyword">for</span> key, rgb <span class="syn-keyword">in</span> <span class="syn-function">pairs</span>(taigaTheme) <span class="syn-keyword">do</span>
+    <span class="syn-keyword">local</span> color = <span class="syn-function">Color3.fromRGB</span>(rgb[<span class="syn-number">1</span>], rgb[<span class="syn-number">2</span>], rgb[<span class="syn-number">3</span>])
+    <span class="syn-function">print</span>(key, color)
+<span class="syn-keyword">end</span>
+
+<span class="syn-comment">-- Apply a theme</span>
+T:<span class="syn-function">SetTheme</span>(<span class="syn-string">"Dark"</span>)
+T:<span class="syn-function">_paintAll</span>()</code></pre>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PLUGIN MODDING
+    ============================================================ -->
+    <section id="modding" class="section">
+      <div class="section-header">
+        <div class="section-icon" style="color: var(--accent);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <h2 class="section-title">Plugin Modding</h2>
+      </div>
+
+      <p class="section-desc">
+        Examples of extending Moon Animator 2 with custom functionality. Save these as Local Plugins 
+        in Roblox Studio (right-click script → "Save as Local Plugin...").
+      </p>
+
+      <div class="alert alert-tip">
+        <div class="alert-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </div>
+        <div>
+          <strong>Tip: Waiting for Moon Animator</strong><br>
+          Always wait for <code>_G.MoonGlobal</code> to be ready before accessing the API.
+          Use a repeat loop with <code>task.wait()</code> to avoid errors.
+        </div>
+      </div>
+
+      <h3 id="custom-easings">Adding Custom Easing Functions</h3>
+      <p>This example adds two custom easing types (Soft and Tert) with full UI integration:</p>
+
+      <div class="code-header">
+        <span class="code-lang">Lua — CustomEasings.lua</span>
+        <button class="copy-btn" onclick="copyCode(this)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+          </svg>
+          Copy
+        </button>
+      </div>
+      <div class="code-block">
+<pre><code><span class="syn-comment">-- CustomEasings — Add custom easing functions to Moon Animator 2</span>
+<span class="syn-comment">-- Save as Local Plugin</span>
+
+<span class="syn-keyword">local</span> CUSTOM_EASINGS = {
+    {
+        name        = <span class="syn-string">"Soft"</span>,
+        displayName = <span class="syn-string">"Soft"</span>,
+        color       = <span class="syn-function">Color3.fromRGB</span>(<span class="syn-number">86</span>, <span class="syn-number">180</span>, <span class="syn-number">233</span>),
+        power       = <span class="syn-number">1.5</span>,
+    },
+    {
+        name        = <span class="syn-string">"Tert"</span>,
+        displayName = <span class="syn-string">"Tert"</span>,
+        color       = <span class="syn-function">Color3.fromRGB</span>(<span class="syn-number">230</span>, <span class="syn-number">159</span>, <span class="syn-number">0</span>),
+        power       = <span class="syn-number">2.5</span>,
+    },
+}
+
+<span class="syn-comment">-- Easing function generators</span>
+<span class="syn-keyword">local function</span> <span class="syn-function">makeIn</span>(p)
+    <span class="syn-keyword">return function</span>(t) <span class="syn-keyword">return</span> t^p <span class="syn-keyword">end</span>
+<span class="syn-keyword">end</span>
+
+<span class="syn-keyword">local function</span> <span class="syn-function">makeOut</span>(p)
+    <span class="syn-keyword">return function</span>(t) <span class="syn-keyword">return</span> <span class="syn-number">1</span> - (<span class="syn-number">1</span> - t)^p <span class="syn-keyword">end</span>
+<span class="syn-keyword">end</span>
+
+<span class="syn-keyword">local function</span> <span class="syn-function">makeInOut</span>(p)
+    <span class="syn-keyword">return function</span>(t)
+        <span class="syn-keyword">if</span> t < <span class="syn-number">0.5</span> <span class="syn-keyword">then</span>
+            <span class="syn-keyword">return</span> ((<span class="syn-number">2</span> * t)^p) / <span class="syn-number">2</span>
+        <span class="syn-keyword">else</span>
+            <span class="syn-keyword">return</span> <span class="syn-number">1</span> - ((-<span class="syn-number">2</span> * t + <span class="syn-number">2</span>)^p) / <span class="syn-number">2</span>
+        <span class="syn-keyword">end</span>
+    <span class="syn-keyword">end</span>
+<span class="syn-keyword">end</span>
+
+<span class="syn-keyword">local function</span> <span class="syn-function">makeOutIn</span>(p)
+    <span class="syn-keyword">return function</span>(t)
+        <span class="syn-keyword">if</span> t < <span class="syn-number">0.5</span> <span class="syn-keyword">then</span>
+            <span class="syn-keyword">return</span> (<span class="syn-number">1</span> - (<span class="syn-number">1</span> - <span class="syn-number">2</span> * t)^p) / <span class="syn-number">2</span>
+        <span class="syn-keyword">else</span>
+            <span class="syn-keyword">return</span> ((<span class="syn-number">2</span> * t - <span class="syn-number">1</span>)^p + <span class="syn-number">1</span>) / <span class="syn-number">2</span>
+        <span class="syn-keyword">end</span>
+    <span class="syn-keyword">end</span>
+<span class="syn-keyword">end</span>
+
+<span class="syn-comment">-- Wait for Moon Animator</span>
+<span class="syn-keyword">local</span> _g
+<span class="syn-keyword">for</span> i = <span class="syn-number">1</span>, <span class="syn-number">60</span> <span class="syn-keyword">do</span>
+    _g = <span class="syn-global">_G</span>.MoonGlobal
+    <span class="syn-keyword">if</span> _g <span class="syn-keyword">and</span> _g.EasingFunctions <span class="syn-keyword">and</span> _g.class <span class="syn-keyword">then</span> <span class="syn-keyword">break</span> <span class="syn-keyword">end</span>
+    <span class="syn-keyword">if</span> i == <span class="syn-number">60</span> <span class="syn-keyword">then</span> <span class="syn-keyword">return</span> <span class="syn-keyword">end</span>
+    <span class="syn-function">task.wait</span>(<span class="syn-number">0.5</span>)
+<span class="syn-keyword">end</span>
+
+<span class="syn-keyword">local</span> Ease = <span class="syn-function">require</span>(_g.class.Ease)
+
+<span class="syn-comment">-- Register each custom easing</span>
+<span class="syn-keyword">for</span> _, easing <span class="syn-keyword">in</span> <span class="syn-function">ipairs</span>(CUSTOM_EASINGS) <span class="syn-keyword">do</span>
+    <span class="syn-keyword">local</span> name = easing.name
+    <span class="syn-keyword">local</span> p = easing.power
+
+    <span class="syn-comment">-- Add easing functions</span>
+    _g.EasingFunctions[name .. <span class="syn-string">"In"</span>]    = <span class="syn-function">makeIn</span>(p)
+    _g.EasingFunctions[name .. <span class="syn-string">"Out"</span>]   = <span class="syn-function">makeOut</span>(p)
+    _g.EasingFunctions[name .. <span class="syn-string">"InOut"</span>] = <span class="syn-function">makeInOut</span>(p)
+    _g.EasingFunctions[name .. <span class="syn-string">"OutIn"</span>] = <span class="syn-function">makeOutIn</span>(p)
+
+    <span class="syn-comment">-- Add to Ease data for UI</span>
+    Ease.EASE_DATA[name] = {
+        Color = easing.color,
+        Params = { Direction = <span class="syn-keyword">true</span> }
+    }
+
+    <span class="syn-comment">-- Add to ease list</span>
+    <span class="syn-function">table.insert</span>(Ease.EASE_LIST, { name, easing.displayName })
+<span class="syn-keyword">end</span>
+
+<span class="syn-function">print</span>(<span class="syn-string">"[CustomEasings] Loaded"</span>, #CUSTOM_EASINGS, <span class="syn-string">"custom easings"</span>)</code></pre>
+      </div>
+
+      <h3 id="theme-unlock">Theme Unlocker</h3>
+      <p>This example unlocks all paid themes for local use:</p>
+
+      <div class="code-header">
+        <span class="code-lang">Lua — ThemeUnlocker.lua</span>
+        <button class="copy-btn" onclick="copyCode(this)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+          </svg>
+          Copy
+        </button>
+      </div>
+      <div class="code-block">
+<pre><code><span class="syn-comment">-- ThemeUnlocker — Unlock all paid themes in Moon Animator 2</span>
+<span class="syn-comment">-- Save as Local Plugin</span>
+
+<span class="syn-keyword">local</span> _g
+<span class="syn-keyword">for</span> i = <span class="syn-number">1</span>, <span class="syn-number">60</span> <span class="syn-keyword">do</span>
+    _g = <span class="syn-global">_G</span>.MoonGlobal
+    <span class="syn-keyword">if</span> _g <span class="syn-keyword">and</span> _g.Themer <span class="syn-keyword">and</span> _g.AllMenuItems <span class="syn-keyword">then</span> <span class="syn-keyword">break</span> <span class="syn-keyword">end</span>
+    <span class="syn-keyword">if</span> i == <span class="syn-number">60</span> <span class="syn-keyword">then</span> <span class="syn-keyword">return</span> <span class="syn-keyword">end</span>
+    <span class="syn-function">task.wait</span>(<span class="syn-number">0.5</span>)
+<span class="syn-keyword">end</span>
+<span class="syn-function">task.wait</span>(<span class="syn-number">1</span>)
+
+<span class="syn-keyword">local</span> T = _g.Themer
+
+<span class="syn-keyword">local</span> PAID_THEMES = {
+    <span class="syn-string">"Taiga"</span>, <span class="syn-string">"Blush"</span>, <span class="syn-string">"Blonde"</span>, <span class="syn-string">"Wheat"</span>, <span class="syn-string">"Gaia"</span>,
+    <span class="syn-string">"Ares"</span>, <span class="syn-string">"Aqua"</span>, <span class="syn-string">"Energy"</span>, <span class="syn-string">"Digital"</span>, <span class="syn-string">"Fuchsia"</span>
+}
+
+<span class="syn-comment">-- Apply theme from built-in data</span>
+<span class="syn-keyword">local function</span> <span class="syn-function">applyTheme</span>(themeName)
+    <span class="syn-keyword">local</span> src = T._BuiltInThemes[themeName]
+    <span class="syn-keyword">if not</span> src <span class="syn-keyword">then</span> <span class="syn-keyword">return</span> <span class="syn-keyword">false</span> <span class="syn-keyword">end</span>
+
+    <span class="syn-comment">-- Convert {R, G, B} → Color3 and write to _Theme</span>
+    <span class="syn-keyword">for</span> key, value <span class="syn-keyword">in</span> <span class="syn-function">pairs</span>(src) <span class="syn-keyword">do</span>
+        <span class="syn-keyword">if</span> <span class="syn-function">typeof</span>(value) == <span class="syn-string">"table"</span>
+            <span class="syn-keyword">and</span> <span class="syn-function">typeof</span>(value[<span class="syn-number">1</span>]) == <span class="syn-string">"number"</span>
+            <span class="syn-keyword">and</span> <span class="syn-function">typeof</span>(value[<span class="syn-number">2</span>]) == <span class="syn-string">"number"</span>
+            <span class="syn-keyword">and</span> <span class="syn-function">typeof</span>(value[<span class="syn-number">3</span>]) == <span class="syn-string">"number"</span>
+        <span class="syn-keyword">then</span>
+            <span class="syn-function">rawset</span>(T._Theme, key, <span class="syn-function">Color3.fromRGB</span>(
+                value[<span class="syn-number">1</span>], value[<span class="syn-number">2</span>], value[<span class="syn-number">3</span>]
+            ))
+        <span class="syn-keyword">end</span>
+    <span class="syn-keyword">end</span>
+
+    <span class="syn-comment">-- Repaint UI</span>
+    <span class="syn-function">pcall</span>(<span class="syn-keyword">function</span>()
+        T:<span class="syn-function">_paintAll</span>()
+    <span class="syn-keyword">end</span>)
+
+    <span class="syn-comment">-- Save preference</span>
+    <span class="syn-function">pcall</span>(<span class="syn-keyword">function</span>()
+        _g.plugin:<span class="syn-function">SetSetting</span>(_g.theme_key, themeName)
+    <span class="syn-keyword">end</span>)
+
+    <span class="syn-keyword">return</span> <span class="syn-keyword">true</span>
+<span class="syn-keyword">end</span>
+
+<span class="syn-comment">-- Unlock paid themes: hide price, enable click</span>
+<span class="syn-keyword">for</span> _, themeName <span class="syn-keyword">in</span> <span class="syn-function">ipairs</span>(PAID_THEMES) <span class="syn-keyword">do</span>
+    <span class="syn-keyword">for</span> _, prefix <span class="syn-keyword">in</span> <span class="syn-function">ipairs</span>({<span class="syn-string">"Theme_"</span>, <span class="syn-string">"Activate_Theme_"</span>}) <span class="syn-keyword">do</span>
+        <span class="syn-keyword">local</span> item = _g.AllMenuItems[prefix .. themeName]
+        <span class="syn-keyword">if not</span> item <span class="syn-keyword">then</span> <span class="syn-keyword">continue</span> <span class="syn-keyword">end</span>
+
+        <span class="syn-comment">-- Hide price tag</span>
+        <span class="syn-keyword">if</span> item.price_frame <span class="syn-keyword">then</span>
+            item.price_frame.Visible = <span class="syn-keyword">false</span>
+        <span class="syn-keyword">end</span>
+
+        <span class="syn-comment">-- Connect click handler</span>
+        <span class="syn-keyword">local</span> input = item.middle_ui <span class="syn-keyword">and</span> item.middle_ui:<span class="syn-function">FindFirstChild</span>(<span class="syn-string">"Input"</span>)
+        <span class="syn-keyword">if</span> input <span class="syn-keyword">and</span> input:<span class="syn-function">IsA</span>(<span class="syn-string">"GuiButton"</span>) <span class="syn-keyword">then</span>
+            input.MouseButton1Click:<span class="syn-function">Connect</span>(<span class="syn-keyword">function</span>()
+                <span class="syn-function">applyTheme</span>(themeName)
+            <span class="syn-keyword">end</span>)
+        <span class="syn-keyword">end</span>
+    <span class="syn-keyword">end</span>
+<span class="syn-keyword">end</span>
+
+<span class="syn-function">print</span>(<span class="syn-string">"[ThemeUnlocker] Unlocked"</span>, #PAID_THEMES, <span class="syn-string">"themes"</span>)</code></pre>
+      </div>
+
+      <h3>Tips for Plugin Development</h3>
+      
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Tip</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Wait for Ready</strong></td>
+              <td>Always wait for <code>_g.ready == true</code> before accessing UI elements</td>
+            </tr>
+            <tr>
+              <td><strong>Save Settings</strong></td>
+              <td>Use <code>_g.plugin:SetSetting(key, value)</code> and <code>:GetSetting(key)</code></td>
+            </tr>
+            <tr>
+              <td><strong>Window Access</strong></td>
+              <td>Most windows have <code>.UI</code> property pointing to their main Frame</td>
+            </tr>
+            <tr>
+              <td><strong>Input Elements</strong></td>
+              <td>Windows often have <code>.g_e</code> containing their input/control elements</td>
+            </tr>
+            <tr>
+              <td><strong>Menu Items</strong></td>
+              <td>Access via <code>_g.AllMenuItems["ItemName"]</code>, click via <code>.middle_ui.Input</code></td>
+            </tr>
+            <tr>
+              <td><strong>Error Handling</strong></td>
+              <td>Wrap API calls in <code>pcall()</code> to prevent plugin crashes</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- ============================================================
+     FOOTER
+============================================================ -->
+<footer class="footer">
+  <p>
+    <strong>Moon Animator 2 API Documentation</strong> — Unofficial Reference<br>
+    Based on version <strong>34000</strong> • API structure may change between updates
+  </p>
+  <p style="margin-top: 12px;">
+    Moon Animator 2 is created by <a href="https://www.roblox.com/users/27747206/profile" target="_blank">xsixx</a> •
+    This documentation is community-made for plugin developers
+  </p>
+  <p style="margin-top: 12px; color: var(--text-3);">
+    Made with 💜 for the Roblox animation community
+  </p>
+</footer>
+
+<script>
+// Copy code functionality
+function copyCode(btn) {
+  const codeBlock = btn.closest('.code-header').nextElementSibling;
+  const code = codeBlock.querySelector('code').innerText;
+  
+  navigator.clipboard.writeText(code).then(() => {
+    const originalText = btn.innerHTML;
+    btn.innerHTML = `
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+      Copied!
+    `;
+    btn.style.background = 'var(--type-function)';
+    btn.style.color = 'white';
+    btn.style.borderColor = 'var(--type-function)';
+    
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+      btn.style.background = '';
+      btn.style.color = '';
+      btn.style.borderColor = '';
+    }, 2000);
+  });
+}
+
+// Active nav link on scroll
+const sections = document.querySelectorAll('.section');
+const navLinks = document.querySelectorAll('.nav-link');
+const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    if (scrollY >= sectionTop - 100) {
+      current = section.getAttribute('id');
+    }
+  });
+  
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === '#' + current) {
+      link.classList.add('active');
+    }
+  });
+  
+  sidebarLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === '#' + current) {
+      link.classList.add('active');
+    }
+  });
+});
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+});
+</script>
+
+</body>
+</html>

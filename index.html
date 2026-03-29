@@ -6,2116 +6,918 @@
 <title>Moon Animator 2 — API Documentation</title>
 <meta name="description" content="Unofficial API documentation for Moon Animator 2 Roblox plugin">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cascadia+Code:wght@400;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
   :root {
-    --bg-0:        #0d0d14;
-    --bg-1:        #13131f;
-    --bg-2:        #1a1a2e;
-    --bg-3:        #22223a;
-    --bg-hover:    #2a2a45;
-    --bg-selected: #312052;
-    --accent:      #c87dff;
-    --accent-dim:  #8b44cc;
-    --accent-glow: rgba(200,125,255,0.15);
-    --text-0:      #f0eaf8;
-    --text-1:      #b8a8d0;
-    --text-2:      #7a6a96;
-    --text-3:      #4a3a66;
-    --border:      #2e2e4a;
-    --border-dim:  #1e1e32;
-
-    --type-table:    #c87dff;
-    --type-function: #4ec9b0;
-    --type-string:   #ce9178;
-    --type-number:   #b5cea8;
-    --type-boolean:  #569cd6;
-    --type-instance: #9cdcfe;
-    --type-color3:   #ff6b9d;
-    --type-module:   #dcdcaa;
-    --type-window:   #4fc1ff;
-    --type-menu:     #c586c0;
-
-    --font: 'Cascadia Code', 'Cascadia Mono', Consolas, 'Courier New', monospace;
-    --radius: 6px;
-    --radius-sm: 4px;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    font-family: var(--font);
-    background: var(--bg-0);
-    color: var(--text-0);
-    line-height: 1.6;
-    font-size: 14px;
-  }
-
-  ::selection {
-    background: var(--accent-dim);
-    color: white;
-  }
-
-  ::-webkit-scrollbar { width: 8px; height: 8px; }
-  ::-webkit-scrollbar-track { background: var(--bg-1); }
-  ::-webkit-scrollbar-thumb { background: var(--bg-3); border-radius: 4px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--accent-dim); }
-
-  a { color: var(--accent); text-decoration: none; transition: color 0.2s; }
-  a:hover { color: var(--text-0); text-decoration: underline; }
-
-  /* ============================================================
-     HEADER
-  ============================================================ */
-  .header {
-    background: linear-gradient(180deg, var(--bg-2) 0%, var(--bg-1) 100%);
-    border-bottom: 1px solid var(--border);
-    padding: 60px 20px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .header::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle at 50% 50%, var(--accent-glow) 0%, transparent 50%);
-    animation: pulse 8s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 0.5; }
-    50% { transform: scale(1.1); opacity: 0.8; }
-  }
-
-  .header-content { position: relative; z-index: 1; }
-
-  .logo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    margin-bottom: 16px;
-  }
-
-  .logo-icon {
-    width: 64px;
-    height: 64px;
-    background: var(--bg-3);
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--accent);
-    box-shadow: 0 8px 32px rgba(200,125,255,0.2);
-  }
-
-  .logo-text h1 {
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--text-0);
-    letter-spacing: -0.5px;
-  }
-
-  .logo-text span {
-    font-size: 14px;
-    color: var(--accent);
-    font-weight: 600;
-  }
-
-  .header-desc {
-    color: var(--text-2);
-    font-size: 16px;
-    max-width: 600px;
-    margin: 0 auto 24px;
-  }
-
-  .header-badges {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    background: var(--bg-3);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    font-size: 12px;
-    color: var(--text-1);
-  }
-
-  .badge-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--accent);
-  }
-
-  /* ============================================================
-     NAV
-  ============================================================ */
-  .nav {
-    background: var(--bg-1);
-    border-bottom: 1px solid var(--border);
-    padding: 0 20px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .nav-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    gap: 4px;
-    overflow-x: auto;
-    padding: 8px 0;
-  }
-
-  .nav-link {
-    padding: 8px 16px;
-    color: var(--text-2);
-    font-size: 13px;
-    font-weight: 600;
-    border-radius: var(--radius);
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-
-  .nav-link:hover {
-    background: var(--bg-hover);
-    color: var(--text-0);
-    text-decoration: none;
-  }
-
-  .nav-link.active {
-    background: var(--bg-selected);
-    color: var(--accent);
-  }
-
-  /* ============================================================
-     MAIN CONTENT
-  ============================================================ */
-  .main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 40px 20px;
-    display: grid;
-    grid-template-columns: 260px 1fr;
-    gap: 40px;
-  }
-
-  @media (max-width: 900px) {
-    .main { grid-template-columns: 1fr; }
-    .sidebar { display: none; }
-  }
-
-  /* ============================================================
-     SIDEBAR
-  ============================================================ */
-  .sidebar {
-    position: sticky;
-    top: 80px;
-    height: fit-content;
-    max-height: calc(100vh - 100px);
-    overflow-y: auto;
-  }
-
-  .sidebar-section {
-    margin-bottom: 24px;
-  }
-
-  .sidebar-title {
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--text-3);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-    padding-left: 12px;
-  }
-
-  .sidebar-link {
-    display: block;
-    padding: 6px 12px;
-    color: var(--text-2);
-    font-size: 13px;
-    border-radius: var(--radius-sm);
-    transition: all 0.15s;
-    border-left: 2px solid transparent;
-  }
-
-  .sidebar-link:hover {
-    background: var(--bg-hover);
-    color: var(--text-0);
-    text-decoration: none;
-    border-left-color: var(--accent-dim);
-  }
-
-  .sidebar-link.active {
-    background: var(--bg-selected);
-    color: var(--accent);
-    border-left-color: var(--accent);
-  }
-
-  /* ============================================================
-     CONTENT
-  ============================================================ */
-  .content { min-width: 0; }
-
-  .section {
-    margin-bottom: 60px;
-    scroll-margin-top: 80px;
-  }
-
-  .section-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 24px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .section-icon {
-    width: 40px;
-    height: 40px;
-    background: var(--bg-3);
-    border-radius: var(--radius);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .section-title {
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--text-0);
-  }
-
-  .section-desc {
-    color: var(--text-2);
-    margin-bottom: 20px;
-    font-size: 14px;
-  }
-
-  h3 {
-    font-size: 18px;
-    color: var(--text-0);
-    margin: 32px 0 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  h3::before {
-    content: '#';
-    color: var(--accent-dim);
-    font-weight: 400;
-  }
-
-  h4 {
-    font-size: 14px;
-    color: var(--text-1);
-    margin: 20px 0 12px;
-    font-weight: 600;
-  }
-
-  p { margin-bottom: 16px; color: var(--text-1); }
-
-  /* ============================================================
-     CODE BLOCKS
-  ============================================================ */
-  .code-block {
-    background: var(--bg-2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-    margin: 16px 0;
-    overflow-x: auto;
-    position: relative;
-  }
-
-  .code-block pre {
-    margin: 0;
-    font-size: 13px;
-    line-height: 1.7;
-    color: var(--text-1);
+    --bg-0:#08080f;--bg-1:#0e0e1a;--bg-2:#151525;--bg-3:#1c1c32;
+    --bg-hover:#232340;--bg-selected:#2a1f50;--bg-glass:rgba(18,18,35,.7);
+    --accent:#a855f7;--accent-light:#c084fc;--accent-dim:#7c3aed;--accent-dark:#5b21b6;
+    --accent-glow:rgba(168,85,247,.12);--accent-glow-strong:rgba(168,85,247,.25);
+    --text-0:#f1f0f5;--text-1:#b8b5c8;--text-2:#7c7894;--text-3:#4a4563;
+    --border:rgba(255,255,255,.06);--border-light:rgba(255,255,255,.1);
+    --border-accent:rgba(168,85,247,.25);
+    --green:#34d399;--blue:#60a5fa;--orange:#fb923c;--red:#f87171;--pink:#f472b6;
+    --yellow:#fbbf24;--cyan:#22d3ee;--teal:#2dd4bf;
+    --font-sans:'Inter',system-ui,-apple-system,sans-serif;
+    --font-mono:'JetBrains Mono','Cascadia Code',Consolas,monospace;
+    --radius:10px;--radius-sm:6px;--radius-lg:16px;--radius-xl:20px;
+    --shadow-sm:0 2px 8px rgba(0,0,0,.3);
+    --shadow-md:0 8px 32px rgba(0,0,0,.4);
+    --shadow-lg:0 16px 64px rgba(0,0,0,.5);
+    --shadow-glow:0 0 40px rgba(168,85,247,.15);
+    --transition-fast:.15s cubic-bezier(.4,0,.2,1);
+    --transition:.25s cubic-bezier(.4,0,.2,1);
+    --transition-slow:.4s cubic-bezier(.4,0,.2,1);
+    --transition-spring:.5s cubic-bezier(.34,1.56,.64,1);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;font-size:15px}
+  body{font-family:var(--font-sans);background:var(--bg-0);color:var(--text-0);line-height:1.65;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden}
+  ::selection{background:var(--accent-dim);color:#fff}
+  ::-webkit-scrollbar{width:6px;height:6px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:var(--bg-3);border-radius:3px}
+  ::-webkit-scrollbar-thumb:hover{background:var(--accent-dim)}
+  a{color:var(--accent-light);text-decoration:none;transition:color var(--transition-fast)}
+  a:hover{color:var(--text-0)}
+
+  /* ===== SCROLL PROGRESS ===== */
+  .scroll-progress{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--pink),var(--accent));z-index:9999;transition:width .1s linear;box-shadow:0 0 10px var(--accent)}
+
+  /* ===== REVEAL ANIMATIONS ===== */
+  .reveal{opacity:0;transform:translateY(30px);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1)}
+  .reveal.visible{opacity:1;transform:translateY(0)}
+  .reveal-delay-1{transition-delay:.1s}
+  .reveal-delay-2{transition-delay:.2s}
+  .reveal-delay-3{transition-delay:.3s}
+
+  /* ===== HEADER ===== */
+  .header{position:relative;padding:100px 24px 80px;text-align:center;overflow:hidden;background:linear-gradient(180deg,rgba(168,85,247,.06) 0%,transparent 70%)}
+  .header-bg{position:absolute;inset:0;overflow:hidden}
+  .header-bg .orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.4;animation:orbFloat 20s ease-in-out infinite}
+  .header-bg .orb-1{width:500px;height:500px;background:radial-gradient(circle,rgba(168,85,247,.3),transparent 70%);top:-200px;left:20%;animation-delay:0s}
+  .header-bg .orb-2{width:400px;height:400px;background:radial-gradient(circle,rgba(96,165,250,.2),transparent 70%);bottom:-150px;right:15%;animation-delay:-7s}
+  .header-bg .orb-3{width:300px;height:300px;background:radial-gradient(circle,rgba(244,114,182,.15),transparent 70%);top:20%;right:30%;animation-delay:-14s}
+  .header-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(168,85,247,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(168,85,247,.03) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 60% 60% at 50% 50%,black,transparent)}
+  @keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(30px,-20px) scale(1.05)}50%{transform:translate(-20px,30px) scale(.95)}75%{transform:translate(20px,20px) scale(1.02)}}
+  .header-content{position:relative;z-index:1;max-width:700px;margin:0 auto}
+  .logo{display:flex;align-items:center;justify-content:center;gap:18px;margin-bottom:24px}
+  .logo-icon{width:72px;height:72px;background:linear-gradient(135deg,var(--accent-dim),var(--accent));border-radius:20px;display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:var(--shadow-glow),var(--shadow-md);position:relative;overflow:hidden}
+  .logo-icon::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.2),transparent);border-radius:inherit}
+  .logo-icon svg{position:relative;z-index:1}
+  .logo-text h1{font-size:2.4rem;font-weight:800;color:var(--text-0);letter-spacing:-.03em;line-height:1.1}
+  .logo-text span{font-size:.85rem;color:var(--accent-light);font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+  .header-desc{color:var(--text-2);font-size:1.05rem;line-height:1.7;margin-bottom:32px;font-weight:400}
+  .header-desc code{background:rgba(168,85,247,.12);padding:2px 8px;border-radius:6px;font-family:var(--font-mono);font-size:.85rem;color:var(--accent-light);border:1px solid rgba(168,85,247,.15)}
+  .header-badges{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .badge{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;background:var(--bg-glass);backdrop-filter:blur(12px);border:1px solid var(--border-light);border-radius:100px;font-size:.75rem;color:var(--text-1);font-weight:500;transition:all var(--transition)}
+  .badge:hover{border-color:var(--border-accent);background:rgba(168,85,247,.08)}
+  .badge-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px rgba(52,211,153,.5);animation:dotPulse 2s ease-in-out infinite}
+  @keyframes dotPulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+  /* ===== COMMAND PALETTE HINT ===== */
+  .cmd-hint{position:fixed;bottom:24px;right:24px;z-index:90;display:flex;align-items:center;gap:8px;padding:10px 16px;background:var(--bg-glass);backdrop-filter:blur(16px);border:1px solid var(--border-light);border-radius:var(--radius);font-size:.8rem;color:var(--text-2);cursor:pointer;transition:all var(--transition);box-shadow:var(--shadow-sm)}
+  .cmd-hint:hover{border-color:var(--border-accent);color:var(--text-0);transform:translateY(-2px);box-shadow:var(--shadow-md)}
+  .cmd-hint kbd{background:var(--bg-3);padding:2px 8px;border-radius:4px;font-family:var(--font-mono);font-size:.7rem;border:1px solid var(--border-light);color:var(--text-1)}
+
+  /* ===== NAV ===== */
+  .nav{background:var(--bg-glass);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 24px;position:sticky;top:0;z-index:100;transition:all var(--transition)}
+  .nav.scrolled{box-shadow:0 4px 24px rgba(0,0,0,.4)}
+  .nav-inner{max-width:1300px;margin:0 auto;display:flex;gap:2px;overflow-x:auto;padding:6px 0;scrollbar-width:none}
+  .nav-inner::-webkit-scrollbar{display:none}
+  .nav-link{padding:8px 16px;color:var(--text-2);font-size:.82rem;font-weight:500;border-radius:var(--radius-sm);transition:all var(--transition);white-space:nowrap;position:relative}
+  .nav-link:hover{background:rgba(255,255,255,.04);color:var(--text-0);text-decoration:none}
+  .nav-link.active{color:var(--accent-light);background:rgba(168,85,247,.08)}
+  .nav-link.active::after{content:'';position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);width:20px;height:2px;background:var(--accent);border-radius:1px}
+
+  /* ===== MAIN ===== */
+  .main{max-width:1300px;margin:0 auto;padding:48px 24px;display:grid;grid-template-columns:240px 1fr;gap:48px}
+  @media(max-width:1000px){.main{grid-template-columns:1fr}.sidebar{display:none}}
+
+  /* ===== SIDEBAR ===== */
+  .sidebar{position:sticky;top:72px;height:fit-content;max-height:calc(100vh - 92px);overflow-y:auto;padding-right:8px;scrollbar-width:thin}
+  .sidebar-section{margin-bottom:28px}
+  .sidebar-title{font-size:.65rem;font-weight:700;color:var(--text-3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;padding-left:12px}
+  .sidebar-link{display:block;padding:6px 12px;color:var(--text-2);font-size:.82rem;font-weight:450;border-radius:var(--radius-sm);transition:all var(--transition);border-left:2px solid transparent}
+  .sidebar-link:hover{background:rgba(255,255,255,.03);color:var(--text-0);text-decoration:none;border-left-color:rgba(168,85,247,.3)}
+  .sidebar-link.active{color:var(--accent-light);border-left-color:var(--accent);background:rgba(168,85,247,.06)}
+
+  /* ===== CONTENT ===== */
+  .content{min-width:0}
+  .section{margin-bottom:72px;scroll-margin-top:80px}
+  .section-header{display:flex;align-items:center;gap:14px;margin-bottom:28px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+  .section-icon{width:44px;height:44px;background:linear-gradient(135deg,var(--bg-3),var(--bg-hover));border:1px solid var(--border-light);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .section-title{font-size:1.7rem;font-weight:800;color:var(--text-0);letter-spacing:-.02em}
+  .section-desc{color:var(--text-2);margin-bottom:24px;font-size:.95rem;line-height:1.75}
+  h3{font-size:1.15rem;color:var(--text-0);margin:40px 0 16px;font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+  h3::before{content:'';width:3px;height:18px;background:var(--accent);border-radius:2px;flex-shrink:0}
+  h4{font-size:.95rem;color:var(--text-1);margin:24px 0 12px;font-weight:600}
+  p{margin-bottom:16px;color:var(--text-1)}
+
+  /* ===== CODE BLOCKS ===== */
+  .code-wrapper{margin:20px 0;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);background:var(--bg-2);transition:border-color var(--transition)}
+  .code-wrapper:hover{border-color:var(--border-light)}
+  .code-header{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:rgba(255,255,255,.02);border-bottom:1px solid var(--border)}
+  .code-lang{font-size:.7rem;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:.8px;font-family:var(--font-mono)}
+  .copy-btn{background:transparent;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-3);padding:4px 12px;font-size:.72rem;font-family:var(--font-sans);cursor:pointer;transition:all var(--transition);display:flex;align-items:center;gap:5px;font-weight:500}
+  .copy-btn:hover{background:var(--accent-dim);color:#fff;border-color:var(--accent-dim);transform:scale(1.02)}
+  .copy-btn:active{transform:scale(.97)}
+  .code-block{padding:18px 20px;overflow-x:auto}
+  .code-block pre{margin:0;font-size:.82rem;line-height:1.8;color:var(--text-1);font-family:var(--font-mono)}
+  code:not(pre code){background:rgba(168,85,247,.1);padding:2px 7px;border-radius:5px;font-size:.82rem;color:var(--accent-light);font-family:var(--font-mono);border:1px solid rgba(168,85,247,.1)}
+
+  /* ===== TABLES ===== */
+  .table-wrap{overflow-x:auto;margin:20px 0;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-1)}
+  table{width:100%;border-collapse:collapse;font-size:.85rem}
+  th{text-align:left;padding:12px 18px;background:rgba(255,255,255,.02);color:var(--text-3);font-weight:600;font-size:.7rem;text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid var(--border)}
+  td{padding:11px 18px;border-bottom:1px solid var(--border);color:var(--text-1);vertical-align:top;transition:background var(--transition-fast)}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:rgba(255,255,255,.02)}
+  .type-badge{display:inline-flex;padding:2px 9px;border-radius:5px;font-size:.7rem;font-weight:600;font-family:var(--font-mono)}
+  .tb-func{background:rgba(52,211,153,.1);color:var(--green)}
+  .tb-str{background:rgba(251,146,60,.1);color:var(--orange)}
+  .tb-num{background:rgba(251,191,36,.1);color:var(--yellow)}
+  .tb-bool{background:rgba(96,165,250,.1);color:var(--blue)}
+  .tb-tbl{background:rgba(168,85,247,.1);color:var(--accent-light)}
+  .tb-mod{background:rgba(34,211,238,.1);color:var(--cyan)}
+
+  /* ===== CARDS ===== */
+  .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin:24px 0}
+  .card{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;transition:all var(--transition);position:relative;overflow:hidden}
+  .card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(168,85,247,.3),transparent);opacity:0;transition:opacity var(--transition)}
+  .card:hover{border-color:var(--border-accent);transform:translateY(-4px);box-shadow:var(--shadow-md),var(--shadow-glow)}
+  .card:hover::before{opacity:1}
+  .card-title{font-size:1rem;font-weight:700;color:var(--text-0);margin-bottom:8px;display:flex;align-items:center;gap:10px}
+  .card-desc{font-size:.82rem;color:var(--text-2);margin-bottom:14px;line-height:1.6}
+  .card-meta{display:flex;gap:12px;font-size:.72rem;color:var(--text-3);font-weight:500}
+
+  /* ===== EASING GRID ===== */
+  .easing-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:8px;margin:20px 0}
+  .easing-item{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;font-size:.8rem;color:var(--text-1);transition:all var(--transition);cursor:default;font-weight:450}
+  .easing-item:hover{border-color:var(--border-accent);background:var(--bg-hover);transform:translateY(-1px)}
+  .easing-item.header{background:rgba(255,255,255,.02);color:var(--text-3);font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.5px}
+
+  /* ===== WINDOW CARDS ===== */
+  .window-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin:20px 0}
+  .window-card{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;transition:all var(--transition)}
+  .window-card:hover{border-color:var(--border-accent);transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+  .window-name{font-weight:700;color:var(--cyan);margin-bottom:6px;font-size:.9rem;font-family:var(--font-mono)}
+  .window-desc{font-size:.78rem;color:var(--text-2);margin-bottom:8px}
+  .window-size{font-size:.7rem;color:var(--text-3);font-family:var(--font-mono)}
+
+  /* ===== ALERTS ===== */
+  .alert{padding:18px 22px;border-radius:var(--radius);margin:24px 0;display:flex;gap:14px;align-items:flex-start;font-size:.88rem;line-height:1.65;backdrop-filter:blur(8px)}
+  .alert-icon{flex-shrink:0;margin-top:2px}
+  .alert strong{display:block;margin-bottom:4px}
+  .alert-info{background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.15);color:var(--blue)}
+  .alert-warning{background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.15);color:var(--yellow)}
+  .alert-tip{background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.15);color:var(--green)}
+
+  /* ===== CLASS CARDS ===== */
+  .class-card{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius);margin:14px 0;overflow:hidden;transition:border-color var(--transition)}
+  .class-card:hover{border-color:var(--border-light)}
+  .class-card-header{padding:14px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;transition:background var(--transition-fast);gap:12px;flex-wrap:wrap}
+  .class-card-header:hover{background:rgba(255,255,255,.02)}
+  .class-card-name{font-size:1rem;font-weight:700;color:var(--cyan);font-family:var(--font-mono)}
+  .class-card-chain{font-size:.72rem;color:var(--text-3);display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+  .chain-sep{color:var(--text-3);font-size:.65rem}
+  .chain-item{color:var(--text-2)}
+  .chain-self{color:var(--cyan);font-weight:600}
+  .collapse-arrow{color:var(--text-3);font-size:.7rem;transition:transform var(--transition-spring);margin-left:4px}
+  .collapse-arrow.open{transform:rotate(90deg)}
+  .class-card-body{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.4,0,.2,1),padding .3s ease}
+  .class-card-body.open{max-height:2000px;padding:0 20px 18px}
+  .class-card-body p{margin-bottom:14px;color:var(--text-2);font-size:.82rem}
+  .method-row{display:flex;align-items:baseline;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);transition:background var(--transition-fast);border-radius:2px}
+  .method-row:last-child{border-bottom:none}
+  .method-row:hover{background:rgba(255,255,255,.015);padding-left:6px}
+  .method-name{color:var(--green);font-weight:600;font-size:.82rem;min-width:220px;flex-shrink:0;font-family:var(--font-mono)}
+  .method-badge{font-size:.65rem;padding:2px 8px;border-radius:4px;font-weight:600;letter-spacing:.3px}
+  .method-badge.constructor{background:rgba(168,85,247,.15);color:var(--accent-light)}
+  .method-desc{color:var(--text-2);font-size:.8rem}
+
+  /* ===== PARAM CARDS ===== */
+  .param-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin:20px 0}
+  .param-card{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px 18px;transition:all var(--transition)}
+  .param-card:hover{border-color:var(--border-accent)}
+  .param-card-name{font-weight:700;color:var(--cyan);font-size:.92rem;margin-bottom:6px;font-family:var(--font-mono)}
+  .param-card-detail{font-size:.78rem;color:var(--text-2);line-height:1.7}
+
+  /* ===== COLOR SWATCH ===== */
+  .color-swatch{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:middle;margin-right:6px;border:1px solid rgba(255,255,255,.12);box-shadow:0 0 6px rgba(0,0,0,.3)}
+
+  /* ===== SEARCH / COMMAND PALETTE ===== */
+  .cmd-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);z-index:1000;opacity:0;visibility:hidden;transition:all var(--transition)}
+  .cmd-overlay.open{opacity:1;visibility:visible}
+  .cmd-palette{position:fixed;top:20%;left:50%;transform:translateX(-50%) translateY(-10px) scale(.98);width:min(580px,90vw);background:var(--bg-1);border:1px solid var(--border-light);border-radius:var(--radius-lg);z-index:1001;opacity:0;visibility:hidden;transition:all var(--transition-spring);box-shadow:var(--shadow-lg),0 0 80px rgba(168,85,247,.1);overflow:hidden}
+  .cmd-palette.open{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0) scale(1)}
+  .cmd-search-wrap{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border)}
+  .cmd-search-wrap svg{color:var(--text-3);flex-shrink:0}
+  .cmd-search-wrap input{background:none;border:none;outline:none;color:var(--text-0);font-family:var(--font-sans);font-size:1rem;width:100%;font-weight:400}
+  .cmd-search-wrap input::placeholder{color:var(--text-3)}
+  .cmd-results{max-height:360px;overflow-y:auto;padding:8px}
+  .cmd-result{padding:10px 16px;border-radius:var(--radius-sm);cursor:pointer;transition:all var(--transition-fast);display:flex;align-items:center;gap:12px}
+  .cmd-result:hover,.cmd-result.selected{background:rgba(168,85,247,.08)}
+  .cmd-result-icon{width:28px;height:28px;background:var(--bg-3);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.7rem;color:var(--text-2);font-family:var(--font-mono);font-weight:600}
+  .cmd-result-text{flex:1;min-width:0}
+  .cmd-result-name{font-weight:600;font-size:.88rem;color:var(--text-0)}
+  .cmd-result-desc{font-size:.75rem;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cmd-empty{padding:32px;text-align:center;color:var(--text-3);font-size:.88rem}
+
+  /* ===== BACK TO TOP ===== */
+  .back-top{position:fixed;bottom:24px;left:24px;z-index:90;width:40px;height:40px;background:var(--bg-glass);backdrop-filter:blur(16px);border:1px solid var(--border-light);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all var(--transition);opacity:0;visibility:hidden;transform:translateY(10px);box-shadow:var(--shadow-sm)}
+  .back-top.visible{opacity:1;visibility:visible;transform:translateY(0)}
+  .back-top:hover{background:var(--accent-dim);border-color:var(--accent-dim);color:#fff;transform:translateY(-2px);box-shadow:var(--shadow-md)}
+  .back-top svg{color:var(--text-1);transition:color var(--transition-fast)}
+  .back-top:hover svg{color:#fff}
+
+  /* ===== FOOTER ===== */
+  .footer{background:var(--bg-1);border-top:1px solid var(--border);padding:48px 24px;text-align:center;color:var(--text-3);font-size:.8rem;line-height:1.8}
+
+  /* ===== SYNTAX ===== */
+  .sk{color:var(--pink)}.sf{color:var(--green)}.ss{color:var(--orange)}.sn{color:var(--yellow)}.sc{color:var(--text-3);font-style:italic}.sg{color:var(--accent-light)}.sp{color:var(--cyan)}
+
+  /* ===== MOBILE ===== */
+  @media(max-width:600px){
+    .header{padding:60px 16px 48px}
+    .logo-text h1{font-size:1.8rem}
+    .header-desc{font-size:.92rem}
+    .main{padding:24px 16px}
+    .section-title{font-size:1.3rem}
+    .card-grid{grid-template-columns:1fr}
+    .window-grid{grid-template-columns:1fr}
+    .cmd-hint{display:none}
   }
-
-  .code-block code {
-    font-family: var(--font);
-  }
-
-  .code-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 16px;
-    background: var(--bg-3);
-    border-bottom: 1px solid var(--border);
-    border-radius: var(--radius) var(--radius) 0 0;
-    margin: 16px 0 0;
-  }
-
-  .code-header + .code-block {
-    margin-top: 0;
-    border-radius: 0 0 var(--radius) var(--radius);
-  }
-
-  .code-lang {
-    font-size: 11px;
-    color: var(--text-2);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .copy-btn {
-    background: var(--bg-hover);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    color: var(--text-2);
-    padding: 4px 10px;
-    font-size: 11px;
-    font-family: var(--font);
-    cursor: pointer;
-    transition: all 0.15s;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  .copy-btn:hover {
-    background: var(--accent-dim);
-    color: white;
-    border-color: var(--accent-dim);
-  }
-
-  code:not(pre code) {
-    background: var(--bg-3);
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 13px;
-    color: var(--accent);
-  }
-
-  /* ============================================================
-     TABLES
-  ============================================================ */
-  .table-wrap {
-    overflow-x: auto;
-    margin: 16px 0;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-  }
-
-  th {
-    text-align: left;
-    padding: 12px 16px;
-    background: var(--bg-3);
-    color: var(--text-2);
-    font-weight: 600;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  td {
-    padding: 10px 16px;
-    border-bottom: 1px solid var(--border-dim);
-    color: var(--text-1);
-    vertical-align: top;
-  }
-
-  tr:last-child td { border-bottom: none; }
-
-  tr:hover td { background: var(--bg-hover); }
-
-  .type-badge {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 600;
-  }
-
-  .type-table    { background: rgba(200,125,255,0.15); color: var(--type-table); }
-  .type-function { background: rgba(78,201,176,0.15);  color: var(--type-function); }
-  .type-string   { background: rgba(206,145,120,0.15); color: var(--type-string); }
-  .type-number   { background: rgba(181,206,168,0.15); color: var(--type-number); }
-  .type-boolean  { background: rgba(86,156,214,0.15);  color: var(--type-boolean); }
-  .type-module   { background: rgba(220,220,170,0.15); color: var(--type-module); }
-  .type-window   { background: rgba(79,193,255,0.15);  color: var(--type-window); }
-  .type-menu     { background: rgba(197,134,192,0.15); color: var(--type-menu); }
-
-  /* ============================================================
-     CARDS
-  ============================================================ */
-  .card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px;
-    margin: 20px 0;
-  }
-
-  .card {
-    background: var(--bg-2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    transition: all 0.2s;
-  }
-
-  .card:hover {
-    border-color: var(--accent-dim);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-  }
-
-  .card-title {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--text-0);
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .card-desc {
-    font-size: 13px;
-    color: var(--text-2);
-    margin-bottom: 12px;
-  }
-
-  .card-meta {
-    display: flex;
-    gap: 12px;
-    font-size: 11px;
-    color: var(--text-3);
-  }
-
-  .card-meta span {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  /* ============================================================
-     EASING GRID
-  ============================================================ */
-  .easing-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 8px;
-    margin: 16px 0;
-  }
-
-  .easing-item {
-    background: var(--bg-2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 10px 12px;
-    font-size: 12px;
-    color: var(--text-1);
-    transition: all 0.15s;
-    cursor: default;
-  }
-
-  .easing-item:hover {
-    border-color: var(--accent-dim);
-    background: var(--bg-hover);
-  }
-
-  .easing-item.header {
-    background: var(--bg-3);
-    color: var(--text-2);
-    font-weight: 600;
-  }
-
-  /* ============================================================
-     WINDOW CARDS
-  ============================================================ */
-  .window-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 12px;
-    margin: 16px 0;
-  }
-
-  .window-card {
-    background: var(--bg-2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-    transition: all 0.2s;
-  }
-
-  .window-card:hover {
-    border-color: var(--accent-dim);
-  }
-
-  .window-name {
-    font-weight: 700;
-    color: var(--type-window);
-    margin-bottom: 8px;
-    font-size: 14px;
-  }
-
-  .window-size {
-    font-size: 11px;
-    color: var(--text-3);
-    display: flex;
-    gap: 16px;
-  }
-
-  .window-size span {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  /* ============================================================
-     ALERTS
-  ============================================================ */
-  .alert {
-    padding: 16px 20px;
-    border-radius: var(--radius);
-    margin: 20px 0;
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-  }
-
-  .alert-icon { flex-shrink: 0; margin-top: 2px; }
-
-  .alert-info {
-    background: rgba(79,193,255,0.1);
-    border: 1px solid rgba(79,193,255,0.3);
-    color: var(--type-window);
-  }
-
-  .alert-warning {
-    background: rgba(255,193,7,0.1);
-    border: 1px solid rgba(255,193,7,0.3);
-    color: #ffc107;
-  }
-
-  .alert-tip {
-    background: rgba(78,201,176,0.1);
-    border: 1px solid rgba(78,201,176,0.3);
-    color: var(--type-function);
-  }
-
-  /* ============================================================
-     FOOTER
-  ============================================================ */
-  .footer {
-    background: var(--bg-1);
-    border-top: 1px solid var(--border);
-    padding: 40px 20px;
-    text-align: center;
-    color: var(--text-3);
-    font-size: 12px;
-  }
-
-  .footer a { color: var(--accent); }
-
-  /* ============================================================
-     SYNTAX HIGHLIGHTING
-  ============================================================ */
-  .syn-keyword { color: var(--type-menu); }
-  .syn-function { color: var(--type-function); }
-  .syn-string { color: var(--type-string); }
-  .syn-number { color: var(--type-number); }
-  .syn-comment { color: var(--text-3); font-style: italic; }
-  .syn-property { color: var(--type-window); }
-  .syn-global { color: var(--accent); }
-
-  /* ============================================================
-     SEARCH
-  ============================================================ */
-  .search-box {
-    background: var(--bg-3);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 10px 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    transition: all 0.2s;
-  }
-
-  .search-box:focus-within {
-    border-color: var(--accent-dim);
-    box-shadow: 0 0 0 3px var(--accent-glow);
-  }
-
-  .search-box input {
-    background: none;
-    border: none;
-    outline: none;
-    color: var(--text-0);
-    font-family: var(--font);
-    font-size: 14px;
-    width: 100%;
-  }
-
-  .search-box input::placeholder { color: var(--text-3); }
-
-  .search-box svg { color: var(--text-2); flex-shrink: 0; }
 </style>
 </head>
 <body>
 
-<!-- ============================================================
-     HEADER
-============================================================ -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- HEADER -->
 <header class="header">
-  <div class="header-content">
+  <div class="header-bg">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="header-grid"></div>
+  </div>
+  <div class="header-content reveal">
     <div class="logo">
       <div class="logo-icon">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
-        </svg>
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
       </div>
       <div class="logo-text">
         <h1>Moon Animator 2</h1>
-        <span>API Documentation</span>
+        <span>API Reference</span>
       </div>
     </div>
-    <p class="header-desc">
-      Unofficial API reference for Moon Animator 2 — the powerful animation plugin for Roblox Studio. 
-      Access internal functions, windows, easings, and more via <code>_G.MoonGlobal</code>
-    </p>
+    <p class="header-desc">Unofficial API documentation for Moon Animator 2 — the powerful Roblox Studio animation plugin. Complete class hierarchy with methods extracted via runtime introspection of <code>_G.MoonGlobal</code></p>
     <div class="header-badges">
       <div class="badge"><div class="badge-dot"></div> Version 34000</div>
-      <div class="badge">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-        </svg>
-        Lua / Luau
-      </div>
-      <div class="badge">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
-        </svg>
-        Unofficial
-      </div>
+      <div class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg> Luau</div>
+      <div class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg> Unofficial</div>
+      <div class="badge">70+ classes</div>
     </div>
   </div>
 </header>
 
-<!-- ============================================================
-     NAV
-============================================================ -->
-<nav class="nav">
+<!-- NAV -->
+<nav class="nav" id="nav">
   <div class="nav-inner">
     <a href="#getting-started" class="nav-link active">Getting Started</a>
-    <a href="#easings" class="nav-link">Easing Functions</a>
+    <a href="#easings" class="nav-link">Easings</a>
     <a href="#windows" class="nav-link">Windows</a>
     <a href="#menus" class="nav-link">Menus</a>
     <a href="#constants" class="nav-link">Constants</a>
     <a href="#classes" class="nav-link">Classes</a>
     <a href="#themer" class="nav-link">Themer</a>
-    <a href="#modding" class="nav-link">Plugin Modding</a>
+    <a href="#modding" class="nav-link">Modding</a>
   </div>
 </nav>
 
-<!-- ============================================================
-     MAIN CONTENT
-============================================================ -->
-<main class="main">
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-section">
-      <div class="sidebar-title">Getting Started</div>
-      <a href="#getting-started" class="sidebar-link">Introduction</a>
-      <a href="#access-point" class="sidebar-link">Access Point</a>
-      <a href="#structure" class="sidebar-link">Structure Overview</a>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-title">API Reference</div>
-      <a href="#easings" class="sidebar-link">Easing Functions</a>
-      <a href="#windows" class="sidebar-link">Windows</a>
-      <a href="#menus" class="sidebar-link">Menus</a>
-      <a href="#constants" class="sidebar-link">Constants</a>
-      <a href="#classes" class="sidebar-link">Classes</a>
-      <a href="#themer" class="sidebar-link">Themer</a>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-title">Modding</div>
-      <a href="#modding" class="sidebar-link">Plugin Modding</a>
-      <a href="#custom-easings" class="sidebar-link">Custom Easings</a>
-      <a href="#theme-unlock" class="sidebar-link">Theme Unlocker</a>
-    </div>
-  </aside>
-
-  <!-- Content -->
-  <div class="content">
-    
-    <!-- ============================================================
-         GETTING STARTED
-    ============================================================ -->
-    <section id="getting-started" class="section">
-      <div class="section-header">
-        <div class="section-icon" style="color: var(--accent);">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-          </svg>
-        </div>
-        <h2 class="section-title">Getting Started</h2>
-      </div>
-
-      <p class="section-desc">
-        Moon Animator 2 exposes its internal API through a global table, allowing plugin developers 
-        to extend functionality, create custom tools, and automate animation workflows.
-      </p>
-
-      <div class="alert alert-warning">
-        <div class="alert-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-            <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
-          </svg>
-        </div>
-        <div>
-          <strong>Unofficial Documentation</strong><br>
-          This API is not officially documented by Moon Animator developers. 
-          Structure may change between versions. Use at your own risk.
-        </div>
-      </div>
-
-      <h3 id="access-point">Access Point</h3>
-      <p>All Moon Animator internals are accessible through the global table:</p>
-
-      <div class="code-header">
-        <span class="code-lang">Lua</span>
-        <button class="copy-btn" onclick="copyCode(this)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
-          </svg>
-          Copy
-        </button>
-      </div>
-      <div class="code-block">
-<pre><code><span class="syn-keyword">local</span> _g = <span class="syn-global">_G</span>.MoonGlobal
-
-<span class="syn-comment">-- Wait for Moon Animator to fully load</span>
-<span class="syn-keyword">repeat</span>
-    _g = <span class="syn-global">_G</span>.MoonGlobal
-    <span class="syn-function">task.wait</span>(<span class="syn-number">0.5</span>)
-<span class="syn-keyword">until</span> _g <span class="syn-keyword">and</span> _g.ready
-
-<span class="syn-function">print</span>(<span class="syn-string">"Moon Animator version:"</span>, _g.ver) <span class="syn-comment">-- 34000</span></code></pre>
-      </div>
-
-      <h3 id="structure">Structure Overview</h3>
-      <p>The <code>_G.MoonGlobal</code> table contains these main categories:</p>
-
-      <div class="card-grid">
-        <div class="card">
-          <div class="card-title">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--type-function)" stroke-width="2">
-              <path d="M18 20V10M12 20V4M6 20v-6"/>
-            </svg>
-            EasingFunctions
-          </div>
-          <div class="card-desc">All interpolation functions for smooth animations</div>
-          <div class="card-meta">
-            <span><span class="type-badge type-function">function</span></span>
-            <span>44 functions</span>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--type-window)" stroke-width="2">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-              <line x1="3" y1="9" x2="21" y2="9"/>
-            </svg>
-            Windows
-          </div>
-          <div class="card-desc">UI windows and dialog configurations</div>
-          <div class="card-meta">
-            <span><span class="type-badge type-window">table</span></span>
-            <span>28 windows</span>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--type-menu)" stroke-width="2">
-              <line x1="3" y1="12" x2="21" y2="12"/>
-              <line x1="3" y1="6" x2="21" y2="6"/>
-              <line x1="3" y1="18" x2="21" y2="18"/>
-            </svg>
-            AllMenus
-          </div>
-          <div class="card-desc">Context menus and menu bar items</div>
-          <div class="card-meta">
-            <span><span class="type-badge type-menu">table</span></span>
-            <span>15 menus</span>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--type-module)" stroke-width="2">
-              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-              <polyline points="14 2 14 8 20 8"/>
-            </svg>
-            class
-          </div>
-          <div class="card-desc">ModuleScript references for core functionality</div>
-          <div class="card-meta">
-            <span><span class="type-badge type-module">ModuleScript</span></span>
-            <span>50+ classes</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================================
-         EASING FUNCTIONS
-    ============================================================ -->
-    <section id="easings" class="section">
-      <div class="section-header">
-        <div class="section-icon" style="color: var(--type-function);">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-          </svg>
-        </div>
-        <h2 class="section-title">Easing Functions</h2>
-      </div>
-
-      <p class="section-desc">
-        Easing functions control animation interpolation. Each function takes a progress value <code>t</code> (0-1) 
-        and returns the eased value (0-1).
-      </p>
-
-      <div class="code-header">
-        <span class="code-lang">Lua</span>
-        <button class="copy-btn" onclick="copyCode(this)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
-          </svg>
-          Copy
-        </button>
-      </div>
-      <div class="code-block">
-<pre><code><span class="syn-keyword">local</span> _g = <span class="syn-global">_G</span>.MoonGlobal
-<span class="syn-keyword">local</span> progress = <span class="syn-number">0.5</span>
-
-<span class="syn-comment">-- Get eased value</span>
-<span class="syn-keyword">local</span> eased = _g.EasingFunctions.<span class="syn-function">QuadOut</span>(progress)
-<span class="syn-function">print</span>(eased) <span class="syn-comment">-- 0.75</span></code></pre>
-      </div>
-
-      <h3>Direction Types</h3>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Direction</th><th>Description</th><th>Curve</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>In</code></td>
-              <td>Starts slow, accelerates</td>
-              <td>⟋ (ease in)</td>
-            </tr>
-            <tr>
-              <td><code>Out</code></td>
-              <td>Starts fast, decelerates</td>
-              <td>⟍ (ease out)</td>
-            </tr>
-            <tr>
-              <td><code>InOut</code></td>
-              <td>Slow start and end, fast middle</td>
-              <td>S-curve</td>
-            </tr>
-            <tr>
-              <td><code>OutIn</code></td>
-              <td>Fast start and end, slow middle</td>
-              <td>Inverse S-curve</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3>Standard Easings</h3>
-      <p>All standard easings have <code>In</code>, <code>Out</code>, <code>InOut</code>, and <code>OutIn</code> variants:</p>
-
-      <div class="easing-grid">
-        <div class="easing-item header">Name</div>
-        <div class="easing-item header">Power/Type</div>
-        <div class="easing-item">Sine</div>
-        <div class="easing-item">Sinusoidal</div>
-        <div class="easing-item">Quad</div>
-        <div class="easing-item">Power of 2</div>
-        <div class="easing-item">Cubic</div>
-        <div class="easing-item">Power of 3</div>
-        <div class="easing-item">Quart</div>
-        <div class="easing-item">Power of 4</div>
-        <div class="easing-item">Quint</div>
-        <div class="easing-item">Power of 5</div>
-        <div class="easing-item">Sextic</div>
-        <div class="easing-item">Power of 6</div>
-        <div class="easing-item">Expo</div>
-        <div class="easing-item">Exponential</div>
-        <div class="easing-item">Circ</div>
-        <div class="easing-item">Circular</div>
-        <div class="easing-item">Back</div>
-        <div class="easing-item">Overshoot</div>
-        <div class="easing-item">Elastic</div>
-        <div class="easing-item">Spring-like</div>
-        <div class="easing-item">Bounce</div>
-        <div class="easing-item">Bouncing</div>
-      </div>
-
-      <h3>Special Easings</h3>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Function</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>Linear</code></td>
-              <td>No easing, constant speed (returns input unchanged)</td>
-            </tr>
-            <tr>
-              <td><code>Constant</code></td>
-              <td>No interpolation, instant jump to target value</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3>Full Function List</h3>
-      <div class="code-block">
-<pre><code><span class="syn-comment">-- Special</span>
-Linear, Constant
-
-<span class="syn-comment">-- Standard (each has In/Out/InOut/OutIn)</span>
-SineIn, SineOut, SineInOut, SineOutIn
-QuadIn, QuadOut, QuadInOut, QuadOutIn
-CubicIn, CubicOut, CubicInOut, CubicOutIn
-QuartIn, QuartOut, QuartInOut, QuartOutIn
-QuintIn, QuintOut, QuintInOut, QuintOutIn
-SexticIn, SexticOut, SexticInOut, SexticOutIn
-ExpoIn, ExpoOut, ExpoInOut, ExpoOutIn
-CircIn, CircOut, CircInOut, CircOutIn
-BackIn, BackOut, BackInOut, BackOutIn
-ElasticIn, ElasticOut, ElasticInOut, ElasticOutIn
-BounceIn, BounceOut, BounceInOut, BounceOutIn</code></pre>
-      </div>
-    </section>
-
-    <!-- ============================================================
-         WINDOWS
-    ============================================================ -->
-    <section id="windows" class="section">
-      <div class="section-header">
-        <div class="section-icon" style="color: var(--type-window);">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-            <line x1="3" y1="9" x2="21" y2="9"/>
-          </svg>
-        </div>
-        <h2 class="section-title">Windows</h2>
-      </div>
-
-      <p class="section-desc">
-        Window objects contain UI configuration and state. Each window has visibility control, 
-        size constraints, and access to its UI frame.
-      </p>
-
-      <h3>Window Properties</h3>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Property</th><th>Type</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>.Visible</code></td>
-              <td><span class="type-badge type-boolean">boolean</span></td>
-              <td>Current visibility state</td>
-            </tr>
-            <tr>
-              <td><code>.MinSize</code></td>
-              <td><span class="type-badge type-table">table</span></td>
-              <td>Minimum dimensions <code>{x, y}</code></td>
-            </tr>
-            <tr>
-              <td><code>.DefaultSize</code></td>
-              <td><span class="type-badge type-table">table</span></td>
-              <td>Default dimensions <code>{x, y}</code></td>
-            </tr>
-            <tr>
-              <td><code>.name</code></td>
-              <td><span class="type-badge type-string">string</span></td>
-              <td>Internal window identifier</td>
-            </tr>
-            <tr>
-              <td><code>.UI</code></td>
-              <td><span class="type-badge type-table">Frame</span></td>
-              <td>Main UI frame (when available)</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3>Main Window</h3>
-      <div class="window-grid">
-        <div class="window-card">
-          <div class="window-name">MoonAnimator</div>
-          <div class="card-desc">Main timeline and animation controls</div>
-          <div class="window-size">
-            <span>📐 Default: 532×306</span>
-            <span>📏 Min: 420×138</span>
-          </div>
-        </div>
-      </div>
-
-      <h3>Animation Windows</h3>
-      <div class="window-grid">
-        <div class="window-card">
-          <div class="window-name">AnimationSettings</div>
-          <div class="card-desc">FPS, length, properties</div>
-          <div class="window-size"><span>205×202</span></div>
-        </div>
-        <div class="window-card">
-          <div class="window-name">EditKeyframes</div>
-          <div class="card-desc">Keyframe editing panel</div>
-          <div class="window-size"><span>294×451</span></div>
-        </div>
-        <div class="window-card">
-          <div class="window-name">EditKeyframes_Ease</div>
-          <div class="card-desc">Easing selection UI</div>
-          <div class="window-size"><span>294×451</span></div>
-        </div>
-        <div class="window-card">
-          <div class="window-name">EditKeyframes_Value</div>
-          <div class="card-desc">Value editing for keyframes</div>
-          <div class="window-size"><span>242×244</span></div>
-        </div>
-        <div class="window-card">
-          <div class="window-name">EditMarkers</div>
-          <div class="card-desc">Timeline markers</div>
-          <div class="window-size"><span>277×228</span></div>
-        </div>
-      </div>
-
-      <h3>Frame Operations</h3>
-      <div class="window-grid">
-        <div class="window-card">
-          <div class="window-name">FillFrames</div>
-          <div class="card-desc">Fill with interpolated values</div>
-          <div class="window-size"><span>242×290</span></div>
-        </div>
-        <div class="window-card">
-          <div class="window-name">RepeatFrames</div>
-          <div class="card-desc">Loop frame sequences</div>
-          <div class="window-size"><span>204×184</span></div>
-        </div>
-        <div class="window-card">
-          <div class="window-name">StretchFrames</div>
-          <div class="card-desc">Time-stretch sequences</div>
-          <div class="window-size"><span>204×172</span></div>
-        </div>
-        <div class="window-card">
-          <div class="window-name">FrameOffset</div>
-          <div class="card-desc">Offset frames in time</div>
-          <div class="window-size"><span>178×108</span></div>
-        </div>
-        <div class="window-card">
-          <div class="window-name">SplitKFVal</div>
-          <div class="card-desc">Split keyframe values</div>
-          <div class="window-size"><span>128×108</span></div>
-        </div>
-      </div>
-
-      <h3>Item Windows</h3>
-      <div class="window-grid">
-        <div class="window-card">
-          <div class="window-name">AddItem</div>
-          <div class="card-desc">Add new animation items</div>
-          <div class="window-size"><span>204×270</span></div>
-        </div>
-        <div class="window-card">
-          <div class="window-name">EditItem</div>
-          <div class="card-desc">Edit item properties</div>
-          <div class="window-size"><span>204×270</span></div>
-        </div>
-        <div class="window-card">
-          <div class="window-name">JumpToItem</div>
-          <div class="card-desc">Quick navigation</div>
-          <div class="window-size"><span>204×108</span></div>
-        </div>
-        <div class="window-card">
-          <div class="window-name">Ungroup</div>
-          <div class="card-desc">Ungroup items</div>
-          <div class="window-size"><span>228×216</span></div>
-        </div>
-      </div>
-
-      <h3>Import/Export</h3>
-      <div class="window-grid">
-        <div class="window-card">
-          <div class="window-name">Import</div>
-          <div class="card-desc">Import animations</div>
-          <div class="window-size"><span>204×312</span></div>
-        </div>
-        <div class="window-card">
-          <div class="window-name">IdImport</div>
-          <div class="card-desc">Import by asset ID</div>
-          <div class="window-size"><span>204×108</span></div>
-        </div>
-        <div class="window-card">
-          <div class="window-name">ExportFiles</div>
-          <div class="card-desc">Export animation files</div>
-          <div class="window-size"><span>187×126</span></div>
-        </div>
-        <div class="window-card">
-          <div class="window-name">SaveAs</div>
-          <div class="card-desc">Save with new name</div>
-          <div class="window-size"><span>204×108</span></div>
-        </div>
-      </div>
-
-      <h3>Utility Windows</h3>
-      <div class="window-grid">
-        <div class="window-card">
-          <div class="window-name">CharacterInserter</div>
-          <div class="card-desc">Insert character rigs</div>
-          <div class="window-size"><span>470×228</span></div>
-        </div>
-        <div class="window-card">
-          <div class="window-name">Welder</div>
-          <div class="card-desc">Weld parts together</div>
-          <div class="window-size"><span>285×190</span></div>
-        </div>
-        <div class="window-card">
-          <div class="window-name">ColorPicker</div>
-          <div class="card-desc">Color selection</div>
-          <div class="window-size"><span>401×350</span></div>
-        </div>
-        <div class="window-card">
-          <div class="window-name">CameraRef</div>
-          <div class="card-desc">Camera reference settings</div>
-          <div class="window-size"><span>204×129</span></div>
-        </div>
-        <div class="window-card">
-          <div class="window-name">CameraRotation</div>
-          <div class="card-desc">Camera rotation controls</div>
-          <div class="window-size"><span>130×148</span></div>
-        </div>
-      </div>
-
-      <h3>Theme/UI Windows</h3>
-      <div class="window-grid">
-        <div class="window-card">
-          <div class="window-name">EditTheme</div>
-          <div class="card-desc">Theme customization</div>
-          <div class="window-size"><span>204×210</span></div>
-        </div>
-        <div class="window-card">
-          <div class="window-name">Activate</div>
-          <div class="card-desc">Activation/purchase</div>
-          <div class="window-size"><span>429×394</span></div>
-        </div>
-        <div class="window-card">
-          <div class="window-name">Supporters</div>
-          <div class="card-desc">Supporter credits</div>
-          <div class="window-size"><span>290×200</span></div>
-        </div>
-        <div class="window-card">
-          <div class="window-name">MsgBox</div>
-          <div class="card-desc">Message dialogs</div>
-          <div class="window-size"><span>224×128</span></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================================
-         MENUS
-    ============================================================ -->
-    <section id="menus" class="section">
-      <div class="section-header">
-        <div class="section-icon" style="color: var(--type-menu);">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="3" y1="12" x2="21" y2="12"/>
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <line x1="3" y1="18" x2="21" y2="18"/>
-          </svg>
-        </div>
-        <h2 class="section-title">Menus</h2>
-      </div>
-
-      <p class="section-desc">
-        Menu objects provide access to Moon Animator's context menus and menu bar items.
-      </p>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Menu Name</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><code>fileMain</code></td><td>File operations (save, load, export)</td></tr>
-            <tr><td><code>editMain</code></td><td>Edit operations (copy, paste, undo)</td></tr>
-            <tr><td><code>frameMain</code></td><td>Frame operations menu</td></tr>
-            <tr><td><code>keyframeMain</code></td><td>Keyframe operations menu</td></tr>
-            <tr><td><code>itemMain</code></td><td>Item operations menu</td></tr>
-            <tr><td><code>cameraMain</code></td><td>Camera controls menu</td></tr>
-            <tr><td><code>RigMenu</code></td><td>Rig-specific options</td></tr>
-            <tr><td><code>GizmoMenu</code></td><td>Transform gizmo options</td></tr>
-            <tr><td><code>HandlesMenu</code></td><td>Handle display options</td></tr>
-            <tr><td><code>EffectsMenu</code></td><td>Visual effects menu</td></tr>
-            <tr><td><code>settingsMain</code></td><td>Settings menu</td></tr>
-            <tr><td><code>other</code></td><td>Miscellaneous options</td></tr>
-            <tr><td><code>h_theme</code></td><td>Theme header</td></tr>
-            <tr><td><code>theme_list</code></td><td>Available themes list</td></tr>
-            <tr><td><code>split_menu</code></td><td>Split operations submenu</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="code-header">
-        <span class="code-lang">Lua</span>
-        <button class="copy-btn" onclick="copyCode(this)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
-          </svg>
-          Copy
-        </button>
-      </div>
-      <div class="code-block">
-<pre><code><span class="syn-keyword">local</span> _g = <span class="syn-global">_G</span>.MoonGlobal
-
-<span class="syn-comment">-- Access a menu</span>
-<span class="syn-keyword">local</span> fileMenu = _g.AllMenus.fileMain
-<span class="syn-function">print</span>(fileMenu.name) <span class="syn-comment">-- "fileMain"</span>
-
-<span class="syn-comment">-- Access menu items</span>
-<span class="syn-keyword">local</span> menuItems = _g.AllMenuItems
-<span class="syn-keyword">for</span> name, item <span class="syn-keyword">in</span> <span class="syn-function">pairs</span>(menuItems) <span class="syn-keyword">do</span>
-    <span class="syn-function">print</span>(name, item.middle_ui)
-<span class="syn-keyword">end</span></code></pre>
-      </div>
-    </section>
-
-    <!-- ============================================================
-         CONSTANTS
-    ============================================================ -->
-    <section id="constants" class="section">
-      <div class="section-header">
-        <div class="section-icon" style="color: var(--type-number);">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="4" y1="9" x2="20" y2="9"/>
-            <line x1="4" y1="15" x2="20" y2="15"/>
-            <line x1="10" y1="3" x2="8" y2="21"/>
-            <line x1="16" y1="3" x2="14" y2="21"/>
-          </svg>
-        </div>
-        <h2 class="section-title">Constants</h2>
-      </div>
-
-      <p class="section-desc">
-        Configuration constants and runtime settings accessible directly on <code>_G.MoonGlobal</code>.
-      </p>
-
-      <h3>Frame Limits</h3>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Constant</th><th>Value</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>MIN_FRAMES</code></td>
-              <td><span class="type-badge type-number">60</span></td>
-              <td>Minimum animation length</td>
-            </tr>
-            <tr>
-              <td><code>MAX_FRAMES</code></td>
-              <td><span class="type-badge type-number">216000</span></td>
-              <td>Maximum animation length (1 hour at 60fps)</td>
-            </tr>
-            <tr>
-              <td><code>DEFAULT_FRAMES</code></td>
-              <td><span class="type-badge type-number">300</span></td>
-              <td>Default animation length (5 seconds at 60fps)</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3>Timing</h3>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Property</th><th>Default</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>DEFAULT_FPS</code></td>
-              <td><span class="type-badge type-number">60</span></td>
-              <td>Default frames per second</td>
-            </tr>
-            <tr>
-              <td><code>current_fps</code></td>
-              <td><span class="type-badge type-number">120</span></td>
-              <td>Current FPS setting (mutable)</td>
-            </tr>
-            <tr>
-              <td><code>DOUBLE_CLICC_TIME</code></td>
-              <td><span class="type-badge type-number">0.5</span></td>
-              <td>Double-click detection threshold (seconds)</td>
-            </tr>
-            <tr>
-              <td><code>time_offset</code></td>
-              <td><span class="type-badge type-number">0</span></td>
-              <td>Playback time offset</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3>Handle Settings</h3>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Property</th><th>Default</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>show_part_handles</code></td>
-              <td><span class="type-badge type-boolean">true</span></td>
-              <td>Show part manipulation handles</td>
-            </tr>
-            <tr>
-              <td><code>show_bone_cones</code></td>
-              <td><span class="type-badge type-boolean">false</span></td>
-              <td>Show bone direction cones</td>
-            </tr>
-            <tr>
-              <td><code>show_bone_spheres</code></td>
-              <td><span class="type-badge type-boolean">false</span></td>
-              <td>Show bone joint spheres</td>
-            </tr>
-            <tr>
-              <td><code>full_part_handles</code></td>
-              <td><span class="type-badge type-boolean">true</span></td>
-              <td>Full handle display mode</td>
-            </tr>
-            <tr>
-              <td><code>scale_handles</code></td>
-              <td><span class="type-badge type-boolean">false</span></td>
-              <td>Show scale handles</td>
-            </tr>
-            <tr>
-              <td><code>no_hide_handles</code></td>
-              <td><span class="type-badge type-boolean">false</span></td>
-              <td>Prevent auto-hiding handles</td>
-            </tr>
-            <tr>
-              <td><code>bone_handle_size</code></td>
-              <td><span class="type-badge type-number">1</span></td>
-              <td>Bone handle scale multiplier</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3>Other</h3>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Property</th><th>Value</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>ver</code></td>
-              <td><span class="type-badge type-number">34000</span></td>
-              <td>Moon Animator version number</td>
-            </tr>
-            <tr>
-              <td><code>ready</code></td>
-              <td><span class="type-badge type-boolean">true</span></td>
-              <td>Plugin fully loaded flag</td>
-            </tr>
-            <tr>
-              <td><code>use_last_ease</code></td>
-              <td><span class="type-badge type-boolean">true</span></td>
-              <td>Remember last used easing</td>
-            </tr>
-            <tr>
-              <td><code>theme_key</code></td>
-              <td><span class="type-badge type-string">"MoonAnimator2_Colors"</span></td>
-              <td>Settings key for theme storage</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- ============================================================
-         CLASSES
-    ============================================================ -->
-    <section id="classes" class="section">
-      <div class="section-header">
-        <div class="section-icon" style="color: var(--type-module);">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-            <polyline points="14 2 14 8 20 8"/>
-            <line x1="16" y1="13" x2="8" y2="13"/>
-            <line x1="16" y1="17" x2="8" y2="17"/>
-          </svg>
-        </div>
-        <h2 class="section-title">Classes</h2>
-      </div>
-
-      <p class="section-desc">
-        The <code>class</code> table contains references to ModuleScripts that can be required for core functionality.
-      </p>
-
-      <div class="code-header">
-        <span class="code-lang">Lua</span>
-        <button class="copy-btn" onclick="copyCode(this)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
-          </svg>
-          Copy
-        </button>
-      </div>
-      <div class="code-block">
-<pre><code><span class="syn-keyword">local</span> _g = <span class="syn-global">_G</span>.MoonGlobal
-
-<span class="syn-comment">-- Require a class module</span>
-<span class="syn-keyword">local</span> Ease = <span class="syn-function">require</span>(_g.class.Ease)
-<span class="syn-keyword">local</span> Button = <span class="syn-function">require</span>(_g.class.Button)
-<span class="syn-keyword">local</span> Menu = <span class="syn-function">require</span>(_g.class.Menu)</code></pre>
-      </div>
-
-      <h3>Track Classes</h3>
-      <p>Animation track types for different properties:</p>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Class</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><code>MotorTrack</code></td><td>Motor6D joint animation</td></tr>
-            <tr><td><code>RigCFrameTrack</code></td><td>Rig CFrame animation</td></tr>
-            <tr><td><code>ModelCFrameTrack</code></td><td>Model CFrame animation</td></tr>
-            <tr><td><code>ModelScaleTrack</code></td><td>Model scale animation</td></tr>
-            <tr><td><code>ModelColorTrack</code></td><td>Model color animation</td></tr>
-            <tr><td><code>ModelTransparencyTrack</code></td><td>Model transparency animation</td></tr>
-            <tr><td><code>CameraCFrameTrack</code></td><td>Camera position/rotation</td></tr>
-            <tr><td><code>CameraLookAtPartTrack</code></td><td>Camera look-at target</td></tr>
-            <tr><td><code>CameraAttachToPartTrack</code></td><td>Camera attachment</td></tr>
-            <tr><td><code>LightingClockTimeTrack</code></td><td>Lighting time of day</td></tr>
-            <tr><td><code>BasePartApplyMeshTrack</code></td><td>Mesh deformation</td></tr>
-            <tr><td><code>MarkerTrack</code></td><td>Timeline markers</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3>Sound Tracks</h3>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Class</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><code>SoundPlayTrack</code></td><td>Play sound</td></tr>
-            <tr><td><code>SoundPlayOnceTrack</code></td><td>Play sound once (no loop)</td></tr>
-            <tr><td><code>SoundPauseTrack</code></td><td>Pause sound</td></tr>
-            <tr><td><code>SoundResumeTrack</code></td><td>Resume sound</td></tr>
-            <tr><td><code>SoundStopTrack</code></td><td>Stop sound</td></tr>
-            <tr><td><code>SoundSetTimeTrack</code></td><td>Set sound playback position</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3>Humanoid Tracks</h3>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Class</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><code>HumanoidAddAccessoryTrack</code></td><td>Add accessory to humanoid</td></tr>
-            <tr><td><code>HumanoidRemoveAccessoriesTrack</code></td><td>Remove accessories</td></tr>
-            <tr><td><code>HumanoidUnequipToolsTrack</code></td><td>Unequip tools</td></tr>
-            <tr><td><code>HumanoidPlayEmoteTrack</code></td><td>Play emote animation</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3>UI Input Classes</h3>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Class</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><code>TextInput</code></td><td>Text input field</td></tr>
-            <tr><td><code>AngleInput</code></td><td>Angle/rotation input</td></tr>
-            <tr><td><code>VectorInput</code></td><td>Vector3 input</td></tr>
-            <tr><td><code>CFrameInput</code></td><td>CFrame input</td></tr>
-            <tr><td><code>EaseInput</code></td><td>Easing selection input</td></tr>
-            <tr><td><code>ListInput</code></td><td>Dropdown list input</td></tr>
-            <tr><td><code>InputList</code></td><td>List of inputs</td></tr>
-            <tr><td><code>KeyValueList</code></td><td>Key-value pair list</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3>UI Component Classes</h3>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Class</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><code>Button</code></td><td>Clickable button</td></tr>
-            <tr><td><code>Radio</code></td><td>Radio button group</td></tr>
-            <tr><td><code>Menu</code></td><td>Context menu</td></tr>
-            <tr><td><code>MenuItem</code></td><td>Menu item</td></tr>
-            <tr><td><code>MenuBar</code></td><td>Menu bar container</td></tr>
-            <tr><td><code>SelectGrid</code></td><td>Selection grid</td></tr>
-            <tr><td><code>MoonScroll</code></td><td>Scrolling container</td></tr>
-            <tr><td><code>Graph</code></td><td>Graph/curve display</td></tr>
-            <tr><td><code>ValueTitle</code></td><td>Value with title label</td></tr>
-            <tr><td><code>ImageList</code></td><td>Image list display</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3>Core Classes</h3>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Class</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>Ease</code></td>
-              <td>Easing functions and metadata (<code>.EASE_DATA</code>, <code>.EASE_LIST</code>)</td>
-            </tr>
-            <tr><td><code>ItemObject</code></td><td>Animation item wrapper</td></tr>
-            <tr><td><code>TrackItem</code></td><td>Track item wrapper</td></tr>
-            <tr><td><code>ObjectGroup</code></td><td>Grouped objects</td></tr>
-            <tr><td><code>Marker</code></td><td>Timeline marker</td></tr>
-            <tr><td><code>Path</code></td><td>Path/spline utilities</td></tr>
-            <tr><td><code>GuiElement</code></td><td>Base GUI element</td></tr>
-            <tr><td><code>SelectionHandler</code></td><td>Selection management</td></tr>
-            <tr><td><code>LayerHandler</code></td><td>Layer management</td></tr>
-            <tr><td><code>LayerSystem</code></td><td>Layer system core</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- ============================================================
-         THEMER
-    ============================================================ -->
-    <section id="themer" class="section">
-      <div class="section-header">
-        <div class="section-icon" style="color: var(--type-color3);">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/>
-            <path d="M12 2a10 10 0 000 20z" fill="currentColor" opacity="0.3"/>
-          </svg>
-        </div>
-        <h2 class="section-title">Themer</h2>
-      </div>
-
-      <p class="section-desc">
-        The Themer handles all color/theme management for Moon Animator's UI.
-      </p>
-
-      <h3>Key Properties</h3>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Property</th><th>Type</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>_Theme</code></td>
-              <td><span class="type-badge type-table">table</span></td>
-              <td>Current theme colors (Color3 values)</td>
-            </tr>
-            <tr>
-              <td><code>_BuiltInThemes</code></td>
-              <td><span class="type-badge type-table">table</span></td>
-              <td>All built-in themes (RGB arrays: {R, G, B})</td>
-            </tr>
-            <tr>
-              <td><code>_PaintMap</code></td>
-              <td><span class="type-badge type-table">table</span></td>
-              <td>Property → theme key mapping</td>
-            </tr>
-            <tr>
-              <td><code>_PaintedItemMap</code></td>
-              <td><span class="type-badge type-table">table</span></td>
-              <td>Painted UI elements</td>
-            </tr>
-            <tr>
-              <td><code>theme_buttons</code></td>
-              <td><span class="type-badge type-table">table</span></td>
-              <td>Theme selection buttons</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3>Key Methods</h3>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Method</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>:SetTheme(name)</code></td>
-              <td>Apply a theme by name</td>
-            </tr>
-            <tr>
-              <td><code>:_paintAll()</code></td>
-              <td>Repaint all UI elements with current theme</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3>Built-in Themes</h3>
-      <div class="card-grid">
-        <div class="card">
-          <div class="card-title" style="color: var(--type-function);">Free Themes</div>
-          <div class="card-desc">Default, Dark, Light, and others included with Moon Animator</div>
-        </div>
-        <div class="card">
-          <div class="card-title" style="color: var(--type-color3);">Paid Themes</div>
-          <div class="card-desc">Taiga, Blush, Blonde, Wheat, Gaia, Ares, Aqua, Energy, Digital, Fuchsia</div>
-        </div>
-      </div>
-
-            <div class="alert alert-info">
-        <div class="alert-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
-          </svg>
-        </div>
-        <div>
-          <strong>Theme Color Format</strong><br>
-          Built-in themes store colors as <code>{R, G, B}</code> arrays (0-255 range).<br>
-          Runtime <code>_Theme</code> uses <code>Color3</code> objects. Convert with <code>Color3.fromRGB()</code>.
-        </div>
-      </div>
-
-      <div class="code-header">
-        <span class="code-lang">Lua</span>
-        <button class="copy-btn" onclick="copyCode(this)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
-          </svg>
-          Copy
-        </button>
-      </div>
-      <div class="code-block">
-<pre><code><span class="syn-keyword">local</span> _g = <span class="syn-global">_G</span>.MoonGlobal
-<span class="syn-keyword">local</span> T = _g.Themer
-
-<span class="syn-comment">-- Get current theme color</span>
-<span class="syn-keyword">local</span> mainColor = T._Theme.main
-<span class="syn-function">print</span>(mainColor) <span class="syn-comment">-- Color3 value</span>
-
-<span class="syn-comment">-- Get built-in theme data (RGB arrays)</span>
-<span class="syn-keyword">local</span> taigaTheme = T._BuiltInThemes[<span class="syn-string">"Taiga"</span>]
-<span class="syn-keyword">for</span> key, rgb <span class="syn-keyword">in</span> <span class="syn-function">pairs</span>(taigaTheme) <span class="syn-keyword">do</span>
-    <span class="syn-keyword">local</span> color = <span class="syn-function">Color3.fromRGB</span>(rgb[<span class="syn-number">1</span>], rgb[<span class="syn-number">2</span>], rgb[<span class="syn-number">3</span>])
-    <span class="syn-function">print</span>(key, color)
-<span class="syn-keyword">end</span>
-
-<span class="syn-comment">-- Apply a theme</span>
-T:<span class="syn-function">SetTheme</span>(<span class="syn-string">"Dark"</span>)
-T:<span class="syn-function">_paintAll</span>()</code></pre>
-      </div>
-    </section>
-
-    <!-- ============================================================
-         PLUGIN MODDING
-    ============================================================ -->
-    <section id="modding" class="section">
-      <div class="section-header">
-        <div class="section-icon" style="color: var(--accent);">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-          </svg>
-        </div>
-        <h2 class="section-title">Plugin Modding</h2>
-      </div>
-
-      <p class="section-desc">
-        Examples of extending Moon Animator 2 with custom functionality. Save these as Local Plugins 
-        in Roblox Studio (right-click script → "Save as Local Plugin...").
-      </p>
-
-      <div class="alert alert-tip">
-        <div class="alert-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
-          </svg>
-        </div>
-        <div>
-          <strong>Tip: Waiting for Moon Animator</strong><br>
-          Always wait for <code>_G.MoonGlobal</code> to be ready before accessing the API.
-          Use a repeat loop with <code>task.wait()</code> to avoid errors.
-        </div>
-      </div>
-
-      <h3 id="custom-easings">Adding Custom Easing Functions</h3>
-      <p>This example adds two custom easing types (Soft and Tert) with full UI integration:</p>
-
-      <div class="code-header">
-        <span class="code-lang">Lua — CustomEasings.lua</span>
-        <button class="copy-btn" onclick="copyCode(this)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
-          </svg>
-          Copy
-        </button>
-      </div>
-      <div class="code-block">
-<pre><code><span class="syn-comment">-- CustomEasings — Add custom easing functions to Moon Animator 2</span>
-<span class="syn-comment">-- Save as Local Plugin</span>
-
-<span class="syn-keyword">local</span> CUSTOM_EASINGS = {
-    {
-        name        = <span class="syn-string">"Soft"</span>,
-        displayName = <span class="syn-string">"Soft"</span>,
-        color       = <span class="syn-function">Color3.fromRGB</span>(<span class="syn-number">86</span>, <span class="syn-number">180</span>, <span class="syn-number">233</span>),
-        power       = <span class="syn-number">1.5</span>,
-    },
-    {
-        name        = <span class="syn-string">"Tert"</span>,
-        displayName = <span class="syn-string">"Tert"</span>,
-        color       = <span class="syn-function">Color3.fromRGB</span>(<span class="syn-number">230</span>, <span class="syn-number">159</span>, <span class="syn-number">0</span>),
-        power       = <span class="syn-number">2.5</span>,
-    },
-}
-
-<span class="syn-comment">-- Easing function generators</span>
-<span class="syn-keyword">local function</span> <span class="syn-function">makeIn</span>(p)
-    <span class="syn-keyword">return function</span>(t) <span class="syn-keyword">return</span> t^p <span class="syn-keyword">end</span>
-<span class="syn-keyword">end</span>
-
-<span class="syn-keyword">local function</span> <span class="syn-function">makeOut</span>(p)
-    <span class="syn-keyword">return function</span>(t) <span class="syn-keyword">return</span> <span class="syn-number">1</span> - (<span class="syn-number">1</span> - t)^p <span class="syn-keyword">end</span>
-<span class="syn-keyword">end</span>
-
-<span class="syn-keyword">local function</span> <span class="syn-function">makeInOut</span>(p)
-    <span class="syn-keyword">return function</span>(t)
-        <span class="syn-keyword">if</span> t < <span class="syn-number">0.5</span> <span class="syn-keyword">then</span>
-            <span class="syn-keyword">return</span> ((<span class="syn-number">2</span> * t)^p) / <span class="syn-number">2</span>
-        <span class="syn-keyword">else</span>
-            <span class="syn-keyword">return</span> <span class="syn-number">1</span> - ((-<span class="syn-number">2</span> * t + <span class="syn-number">2</span>)^p) / <span class="syn-number">2</span>
-        <span class="syn-keyword">end</span>
-    <span class="syn-keyword">end</span>
-<span class="syn-keyword">end</span>
-
-<span class="syn-keyword">local function</span> <span class="syn-function">makeOutIn</span>(p)
-    <span class="syn-keyword">return function</span>(t)
-        <span class="syn-keyword">if</span> t < <span class="syn-number">0.5</span> <span class="syn-keyword">then</span>
-            <span class="syn-keyword">return</span> (<span class="syn-number">1</span> - (<span class="syn-number">1</span> - <span class="syn-number">2</span> * t)^p) / <span class="syn-number">2</span>
-        <span class="syn-keyword">else</span>
-            <span class="syn-keyword">return</span> ((<span class="syn-number">2</span> * t - <span class="syn-number">1</span>)^p + <span class="syn-number">1</span>) / <span class="syn-number">2</span>
-        <span class="syn-keyword">end</span>
-    <span class="syn-keyword">end</span>
-<span class="syn-keyword">end</span>
-
-<span class="syn-comment">-- Wait for Moon Animator</span>
-<span class="syn-keyword">local</span> _g
-<span class="syn-keyword">for</span> i = <span class="syn-number">1</span>, <span class="syn-number">60</span> <span class="syn-keyword">do</span>
-    _g = <span class="syn-global">_G</span>.MoonGlobal
-    <span class="syn-keyword">if</span> _g <span class="syn-keyword">and</span> _g.EasingFunctions <span class="syn-keyword">and</span> _g.class <span class="syn-keyword">then</span> <span class="syn-keyword">break</span> <span class="syn-keyword">end</span>
-    <span class="syn-keyword">if</span> i == <span class="syn-number">60</span> <span class="syn-keyword">then</span> <span class="syn-keyword">return</span> <span class="syn-keyword">end</span>
-    <span class="syn-function">task.wait</span>(<span class="syn-number">0.5</span>)
-<span class="syn-keyword">end</span>
-
-<span class="syn-keyword">local</span> Ease = <span class="syn-function">require</span>(_g.class.Ease)
-
-<span class="syn-comment">-- Register each custom easing</span>
-<span class="syn-keyword">for</span> _, easing <span class="syn-keyword">in</span> <span class="syn-function">ipairs</span>(CUSTOM_EASINGS) <span class="syn-keyword">do</span>
-    <span class="syn-keyword">local</span> name = easing.name
-    <span class="syn-keyword">local</span> p = easing.power
-
-    <span class="syn-comment">-- Add easing functions</span>
-    _g.EasingFunctions[name .. <span class="syn-string">"In"</span>]    = <span class="syn-function">makeIn</span>(p)
-    _g.EasingFunctions[name .. <span class="syn-string">"Out"</span>]   = <span class="syn-function">makeOut</span>(p)
-    _g.EasingFunctions[name .. <span class="syn-string">"InOut"</span>] = <span class="syn-function">makeInOut</span>(p)
-    _g.EasingFunctions[name .. <span class="syn-string">"OutIn"</span>] = <span class="syn-function">makeOutIn</span>(p)
-
-    <span class="syn-comment">-- Add to Ease data for UI</span>
-    Ease.EASE_DATA[name] = {
-        Color = easing.color,
-        Params = { Direction = <span class="syn-keyword">true</span> }
-    }
-
-    <span class="syn-comment">-- Add to ease list</span>
-    <span class="syn-function">table.insert</span>(Ease.EASE_LIST, { name, easing.displayName })
-<span class="syn-keyword">end</span>
-
-<span class="syn-function">print</span>(<span class="syn-string">"[CustomEasings] Loaded"</span>, #CUSTOM_EASINGS, <span class="syn-string">"custom easings"</span>)</code></pre>
-      </div>
-
-      <h3 id="theme-unlock">Theme Unlocker</h3>
-      <p>This example unlocks all paid themes for local use:</p>
-
-      <div class="code-header">
-        <span class="code-lang">Lua — ThemeUnlocker.lua</span>
-        <button class="copy-btn" onclick="copyCode(this)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
-          </svg>
-          Copy
-        </button>
-      </div>
-      <div class="code-block">
-<pre><code><span class="syn-comment">-- ThemeUnlocker — Unlock all paid themes in Moon Animator 2</span>
-<span class="syn-comment">-- Save as Local Plugin</span>
-
-<span class="syn-keyword">local</span> _g
-<span class="syn-keyword">for</span> i = <span class="syn-number">1</span>, <span class="syn-number">60</span> <span class="syn-keyword">do</span>
-    _g = <span class="syn-global">_G</span>.MoonGlobal
-    <span class="syn-keyword">if</span> _g <span class="syn-keyword">and</span> _g.Themer <span class="syn-keyword">and</span> _g.AllMenuItems <span class="syn-keyword">then</span> <span class="syn-keyword">break</span> <span class="syn-keyword">end</span>
-    <span class="syn-keyword">if</span> i == <span class="syn-number">60</span> <span class="syn-keyword">then</span> <span class="syn-keyword">return</span> <span class="syn-keyword">end</span>
-    <span class="syn-function">task.wait</span>(<span class="syn-number">0.5</span>)
-<span class="syn-keyword">end</span>
-<span class="syn-function">task.wait</span>(<span class="syn-number">1</span>)
-
-<span class="syn-keyword">local</span> T = _g.Themer
-
-<span class="syn-keyword">local</span> PAID_THEMES = {
-    <span class="syn-string">"Taiga"</span>, <span class="syn-string">"Blush"</span>, <span class="syn-string">"Blonde"</span>, <span class="syn-string">"Wheat"</span>, <span class="syn-string">"Gaia"</span>,
-    <span class="syn-string">"Ares"</span>, <span class="syn-string">"Aqua"</span>, <span class="syn-string">"Energy"</span>, <span class="syn-string">"Digital"</span>, <span class="syn-string">"Fuchsia"</span>
-}
-
-<span class="syn-comment">-- Apply theme from built-in data</span>
-<span class="syn-keyword">local function</span> <span class="syn-function">applyTheme</span>(themeName)
-    <span class="syn-keyword">local</span> src = T._BuiltInThemes[themeName]
-    <span class="syn-keyword">if not</span> src <span class="syn-keyword">then</span> <span class="syn-keyword">return</span> <span class="syn-keyword">false</span> <span class="syn-keyword">end</span>
-
-    <span class="syn-comment">-- Convert {R, G, B} → Color3 and write to _Theme</span>
-    <span class="syn-keyword">for</span> key, value <span class="syn-keyword">in</span> <span class="syn-function">pairs</span>(src) <span class="syn-keyword">do</span>
-        <span class="syn-keyword">if</span> <span class="syn-function">typeof</span>(value) == <span class="syn-string">"table"</span>
-            <span class="syn-keyword">and</span> <span class="syn-function">typeof</span>(value[<span class="syn-number">1</span>]) == <span class="syn-string">"number"</span>
-            <span class="syn-keyword">and</span> <span class="syn-function">typeof</span>(value[<span class="syn-number">2</span>]) == <span class="syn-string">"number"</span>
-            <span class="syn-keyword">and</span> <span class="syn-function">typeof</span>(value[<span class="syn-number">3</span>]) == <span class="syn-string">"number"</span>
-        <span class="syn-keyword">then</span>
-            <span class="syn-function">rawset</span>(T._Theme, key, <span class="syn-function">Color3.fromRGB</span>(
-                value[<span class="syn-number">1</span>], value[<span class="syn-number">2</span>], value[<span class="syn-number">3</span>]
-            ))
-        <span class="syn-keyword">end</span>
-    <span class="syn-keyword">end</span>
-
-    <span class="syn-comment">-- Repaint UI</span>
-    <span class="syn-function">pcall</span>(<span class="syn-keyword">function</span>()
-        T:<span class="syn-function">_paintAll</span>()
-    <span class="syn-keyword">end</span>)
-
-    <span class="syn-comment">-- Save preference</span>
-    <span class="syn-function">pcall</span>(<span class="syn-keyword">function</span>()
-        _g.plugin:<span class="syn-function">SetSetting</span>(_g.theme_key, themeName)
-    <span class="syn-keyword">end</span>)
-
-    <span class="syn-keyword">return</span> <span class="syn-keyword">true</span>
-<span class="syn-keyword">end</span>
-
-<span class="syn-comment">-- Unlock paid themes: hide price, enable click</span>
-<span class="syn-keyword">for</span> _, themeName <span class="syn-keyword">in</span> <span class="syn-function">ipairs</span>(PAID_THEMES) <span class="syn-keyword">do</span>
-    <span class="syn-keyword">for</span> _, prefix <span class="syn-keyword">in</span> <span class="syn-function">ipairs</span>({<span class="syn-string">"Theme_"</span>, <span class="syn-string">"Activate_Theme_"</span>}) <span class="syn-keyword">do</span>
-        <span class="syn-keyword">local</span> item = _g.AllMenuItems[prefix .. themeName]
-        <span class="syn-keyword">if not</span> item <span class="syn-keyword">then</span> <span class="syn-keyword">continue</span> <span class="syn-keyword">end</span>
-
-        <span class="syn-comment">-- Hide price tag</span>
-        <span class="syn-keyword">if</span> item.price_frame <span class="syn-keyword">then</span>
-            item.price_frame.Visible = <span class="syn-keyword">false</span>
-        <span class="syn-keyword">end</span>
-
-        <span class="syn-comment">-- Connect click handler</span>
-        <span class="syn-keyword">local</span> input = item.middle_ui <span class="syn-keyword">and</span> item.middle_ui:<span class="syn-function">FindFirstChild</span>(<span class="syn-string">"Input"</span>)
-        <span class="syn-keyword">if</span> input <span class="syn-keyword">and</span> input:<span class="syn-function">IsA</span>(<span class="syn-string">"GuiButton"</span>) <span class="syn-keyword">then</span>
-            input.MouseButton1Click:<span class="syn-function">Connect</span>(<span class="syn-keyword">function</span>()
-                <span class="syn-function">applyTheme</span>(themeName)
-            <span class="syn-keyword">end</span>)
-        <span class="syn-keyword">end</span>
-    <span class="syn-keyword">end</span>
-<span class="syn-keyword">end</span>
-
-<span class="syn-function">print</span>(<span class="syn-string">"[ThemeUnlocker] Unlocked"</span>, #PAID_THEMES, <span class="syn-string">"themes"</span>)</code></pre>
-      </div>
-
-      <h3>Tips for Plugin Development</h3>
-      
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Tip</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>Wait for Ready</strong></td>
-              <td>Always wait for <code>_g.ready == true</code> before accessing UI elements</td>
-            </tr>
-            <tr>
-              <td><strong>Save Settings</strong></td>
-              <td>Use <code>_g.plugin:SetSetting(key, value)</code> and <code>:GetSetting(key)</code></td>
-            </tr>
-            <tr>
-              <td><strong>Window Access</strong></td>
-              <td>Most windows have <code>.UI</code> property pointing to their main Frame</td>
-            </tr>
-            <tr>
-              <td><strong>Input Elements</strong></td>
-              <td>Windows often have <code>.g_e</code> containing their input/control elements</td>
-            </tr>
-            <tr>
-              <td><strong>Menu Items</strong></td>
-              <td>Access via <code>_g.AllMenuItems["ItemName"]</code>, click via <code>.middle_ui.Input</code></td>
-            </tr>
-            <tr>
-              <td><strong>Error Handling</strong></td>
-              <td>Wrap API calls in <code>pcall()</code> to prevent plugin crashes</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
+<!-- COMMAND PALETTE -->
+<div class="cmd-overlay" id="cmdOverlay" onclick="closePalette()"></div>
+<div class="cmd-palette" id="cmdPalette">
+  <div class="cmd-search-wrap">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="cmdInput" placeholder="Search classes, methods, properties..." autocomplete="off">
   </div>
-</main>
+  <div class="cmd-results" id="cmdResults"><div class="cmd-empty">Start typing to search…</div></div>
+</div>
 
-<!-- ============================================================
-     FOOTER
-============================================================ -->
+<div class="cmd-hint" onclick="openPalette()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Search <kbd>Ctrl</kbd><kbd>K</kbd></div>
+
+<!-- BACK TO TOP -->
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg></button>
+
+<main class="main">
+<aside class="sidebar">
+  <div class="sidebar-section"><div class="sidebar-title">Overview</div>
+    <a href="#getting-started" class="sidebar-link">Introduction</a>
+    <a href="#access-point" class="sidebar-link">Access Point</a>
+    <a href="#structure" class="sidebar-link">Structure</a></div>
+  <div class="sidebar-section"><div class="sidebar-title">Reference</div>
+    <a href="#easings" class="sidebar-link">Easing Functions</a>
+    <a href="#ease-data" class="sidebar-link">Ease Data</a>
+    <a href="#windows" class="sidebar-link">Windows</a>
+    <a href="#menus" class="sidebar-link">Menus</a>
+    <a href="#constants" class="sidebar-link">Constants</a></div>
+  <div class="sidebar-section"><div class="sidebar-title">Classes</div>
+    <a href="#classes" class="sidebar-link">Hierarchy</a>
+    <a href="#cls-core" class="sidebar-link">Core / Base</a>
+    <a href="#cls-tracks" class="sidebar-link">Tracks</a>
+    <a href="#cls-ui" class="sidebar-link">UI Components</a>
+    <a href="#cls-input" class="sidebar-link">Inputs</a>
+    <a href="#cls-system" class="sidebar-link">System</a></div>
+  <div class="sidebar-section"><div class="sidebar-title">Extend</div>
+    <a href="#themer" class="sidebar-link">Themer</a>
+    <a href="#modding" class="sidebar-link">Modding</a>
+    <a href="#custom-easings" class="sidebar-link">Custom Easings</a>
+    <a href="#theme-unlock" class="sidebar-link">Themes</a></div>
+</aside>
+
+<div class="content">
+
+<!-- GETTING STARTED -->
+<section id="getting-started" class="section reveal">
+  <div class="section-header">
+    <div class="section-icon" style="color:var(--accent-light)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+    <h2 class="section-title">Getting Started</h2>
+  </div>
+  <p class="section-desc">Moon Animator 2 exposes its internal API through a global table, allowing plugin developers to extend functionality, create custom tools, and automate animation workflows.</p>
+  <div class="alert alert-warning"><div class="alert-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div><strong>Unofficial Documentation</strong>This API is not officially documented. All data was extracted via runtime introspection. Structure may change between versions.</div></div>
+
+  <h3 id="access-point">Access Point</h3>
+  <div class="code-wrapper"><div class="code-header"><span class="code-lang">Lua</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy</button></div><div class="code-block"><pre><code><span class="sk">local</span> _g
+
+<span class="sc">-- Wait for Moon Animator to fully load</span>
+<span class="sk">repeat</span>
+    _g = <span class="sg">_G</span>.MoonGlobal
+    <span class="sf">task.wait</span>(<span class="sn">0.5</span>)
+<span class="sk">until</span> _g <span class="sk">and</span> _g.ready
+
+<span class="sf">print</span>(<span class="ss">"Moon Animator v"</span>, _g.ver) <span class="sc">-- 34000</span></code></pre></div></div>
+
+  <h3 id="structure">Structure Overview</h3>
+  <div class="card-grid reveal">
+    <div class="card"><div class="card-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>EasingFunctions</div><div class="card-desc">All interpolation functions for smooth animations</div><div class="card-meta"><span class="type-badge tb-func">function</span><span>44 functions</span></div></div>
+    <div class="card"><div class="card-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>Windows</div><div class="card-desc">UI windows and dialog configurations</div><div class="card-meta"><span class="type-badge tb-tbl">table</span><span>28 windows</span></div></div>
+    <div class="card"><div class="card-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>AllMenus</div><div class="card-desc">Context menus and menu bar items</div><div class="card-meta"><span class="type-badge tb-tbl">table</span><span>14 menus</span></div></div>
+    <div class="card"><div class="card-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>class</div><div class="card-desc">ModuleScript references for core functionality</div><div class="card-meta"><span class="type-badge tb-mod">ModuleScript</span><span>70+ classes</span></div></div>
+  </div>
+</section>
+
+<!-- EASINGS -->
+<section id="easings" class="section reveal">
+  <div class="section-header">
+    <div class="section-icon" style="color:var(--green)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+    <h2 class="section-title">Easing Functions</h2>
+  </div>
+  <p class="section-desc">Location: <code>_g.EasingFunctions</code> — Each takes progress <code>t</code> (0–1), returns eased value (0–1).</p>
+  <div class="code-wrapper"><div class="code-header"><span class="code-lang">Lua</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy</button></div><div class="code-block"><pre><code><span class="sk">local</span> eased = _g.EasingFunctions.<span class="sf">QuadOut</span>(<span class="sn">0.5</span>) <span class="sc">-- 0.75</span></code></pre></div></div>
+
+  <h3>Direction Types</h3>
+  <div class="table-wrap"><table><thead><tr><th>Direction</th><th>Behavior</th></tr></thead><tbody>
+    <tr><td><code>In</code></td><td>Starts slow, accelerates</td></tr>
+    <tr><td><code>Out</code></td><td>Starts fast, decelerates</td></tr>
+    <tr><td><code>InOut</code></td><td>Slow start and end, fast middle (S-curve)</td></tr>
+    <tr><td><code>OutIn</code></td><td>Fast start and end, slow middle</td></tr>
+  </tbody></table></div>
+
+  <h3>Standard Easings</h3>
+  <p>Each has <code>In</code>/<code>Out</code>/<code>InOut</code>/<code>OutIn</code> variants:</p>
+  <div class="easing-grid">
+    <div class="easing-item header">Name</div><div class="easing-item header">Type</div>
+    <div class="easing-item">Sine</div><div class="easing-item">Sinusoidal</div>
+    <div class="easing-item">Quad</div><div class="easing-item">Power of 2</div>
+    <div class="easing-item">Cubic</div><div class="easing-item">Power of 3</div>
+    <div class="easing-item">Quart</div><div class="easing-item">Power of 4</div>
+    <div class="easing-item">Quint</div><div class="easing-item">Power of 5</div>
+    <div class="easing-item">Sextic</div><div class="easing-item">Power of 6</div>
+    <div class="easing-item">Expo</div><div class="easing-item">Exponential</div>
+    <div class="easing-item">Circ</div><div class="easing-item">Circular</div>
+    <div class="easing-item">Back</div><div class="easing-item">Overshoot</div>
+    <div class="easing-item">Elastic</div><div class="easing-item">Spring</div>
+    <div class="easing-item">Bounce</div><div class="easing-item">Bouncing</div>
+  </div>
+
+  <h3>Special Easings</h3>
+  <div class="table-wrap"><table><thead><tr><th>Function</th><th>Description</th></tr></thead><tbody>
+    <tr><td><code>Linear</code></td><td>No easing — returns input unchanged</td></tr>
+    <tr><td><code>Constant</code></td><td>No interpolation — instant jump</td></tr>
+  </tbody></table></div>
+
+  <h3 id="ease-data">Ease Data &amp; Parameters</h3>
+  <p>The <code>Ease</code> class (<code>require(_g.class.Ease)</code>) holds metadata used by the UI:</p>
+
+  <h4>EASE_DATA — Colors &amp; parameters per type</h4>
+  <div class="table-wrap"><table><thead><tr><th>Easing</th><th>Color</th><th>Parameters</th></tr></thead><tbody>
+    <tr><td><code>Linear</code></td><td><span class="color-swatch" style="background:rgb(23,101,184)"></span>rgb(23,101,184)</td><td>—</td></tr>
+    <tr><td><code>Constant</code></td><td><span class="color-swatch" style="background:rgb(117,108,60)"></span>rgb(117,108,60)</td><td>—</td></tr>
+    <tr><td><code>Sine</code></td><td><span class="color-swatch" style="background:rgb(0,215,23)"></span>rgb(0,215,23)</td><td>Direction</td></tr>
+    <tr><td><code>Quad</code></td><td><span class="color-swatch" style="background:rgb(233,24,24)"></span>rgb(233,24,24)</td><td>Direction</td></tr>
+    <tr><td><code>Cubic</code></td><td><span class="color-swatch" style="background:rgb(184,23,133)"></span>rgb(184,23,133)</td><td>Direction</td></tr>
+    <tr><td><code>Quart</code></td><td><span class="color-swatch" style="background:rgb(253,91,3)"></span>rgb(253,91,3)</td><td>Direction</td></tr>
+    <tr><td><code>Quint</code></td><td><span class="color-swatch" style="background:rgb(254,198,6)"></span>rgb(254,198,6)</td><td>Direction</td></tr>
+    <tr><td><code>Sextic</code></td><td><span class="color-swatch" style="background:rgb(172,141,224)"></span>rgb(172,141,224)</td><td>Direction</td></tr>
+    <tr><td><code>Expo</code></td><td><span class="color-swatch" style="background:rgb(255,127,200)"></span>rgb(255,127,200)</td><td>Direction</td></tr>
+    <tr><td><code>Circ</code></td><td><span class="color-swatch" style="background:rgb(16,210,229)"></span>rgb(16,210,229)</td><td>Direction</td></tr>
+    <tr><td><code>Back</code></td><td><span class="color-swatch" style="background:rgb(189,195,199)"></span>rgb(189,195,199)</td><td>Direction, Overshoot</td></tr>
+    <tr><td><code>Elastic</code></td><td><span class="color-swatch" style="background:rgb(93,184,23)"></span>rgb(93,184,23)</td><td>Direction, Period, Amplitude</td></tr>
+    <tr><td><code>Bounce</code></td><td><span class="color-swatch" style="background:rgb(103,23,184)"></span>rgb(103,23,184)</td><td>Direction</td></tr>
+  </tbody></table></div>
+
+  <h4>PARAM_DATA — Defaults</h4>
+  <div class="param-grid">
+    <div class="param-card"><div class="param-card-name">Overshoot</div><div class="param-card-detail">Default: <code>1.70158</code><br>Increment: <code>0.1</code></div></div>
+    <div class="param-card"><div class="param-card-name">Period</div><div class="param-card-detail">Default: <code>0.3</code><br>Increment: <code>0.01</code><br>Frame-relative: ✓</div></div>
+    <div class="param-card"><div class="param-card-name">Amplitude</div><div class="param-card-detail">Default: <code>1</code><br>Increment: <code>0.1</code></div></div>
+  </div>
+</section>
+
+<!-- WINDOWS -->
+<section id="windows" class="section reveal">
+  <div class="section-header">
+    <div class="section-icon" style="color:var(--cyan)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg></div>
+    <h2 class="section-title">Windows</h2>
+  </div>
+  <p class="section-desc">Location: <code>_g.Windows</code> — The <code>Window</code> class is at <code>_g.class.Window</code>.</p>
+
+  <h3>Window Properties</h3>
+  <div class="table-wrap"><table><thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead><tbody>
+    <tr><td><code>.Visible</code></td><td><span class="type-badge tb-bool">boolean</span></td><td>Current visibility</td></tr>
+    <tr><td><code>.MinSize</code></td><td><span class="type-badge tb-tbl">table</span></td><td>Minimum dimensions <code>{x, y}</code></td></tr>
+    <tr><td><code>.DefaultSize</code></td><td><span class="type-badge tb-tbl">table</span></td><td>Default dimensions <code>{x, y}</code></td></tr>
+    <tr><td><code>.name</code></td><td><span class="type-badge tb-str">string</span></td><td>Internal identifier</td></tr>
+    <tr><td><code>.UI</code></td><td><span class="type-badge tb-tbl">Frame</span></td><td>Main UI frame</td></tr>
+  </tbody></table></div>
+
+  <h3>All Windows</h3>
+  <div class="window-grid">
+    <div class="window-card"><div class="window-name">MoonAnimator</div><div class="window-desc">Main timeline</div><div class="window-size">532×306 (min 420×138)</div></div>
+    <div class="window-card"><div class="window-name">AnimationSettings</div><div class="window-desc">FPS, length</div><div class="window-size">205×202</div></div>
+    <div class="window-card"><div class="window-name">EditKeyframes</div><div class="window-desc">Keyframe editing</div><div class="window-size">294×451</div></div>
+    <div class="window-card"><div class="window-name">EditKeyframes_Ease</div><div class="window-desc">Easing selector</div><div class="window-size">294×451</div></div>
+    <div class="window-card"><div class="window-name">EditKeyframes_Value</div><div class="window-desc">Value editing</div><div class="window-size">242×244</div></div>
+    <div class="window-card"><div class="window-name">EditMarkers</div><div class="window-desc">Timeline markers</div><div class="window-size">277×228</div></div>
+    <div class="window-card"><div class="window-name">FillFrames</div><div class="window-desc">Interpolated fill</div><div class="window-size">242×290</div></div>
+    <div class="window-card"><div class="window-name">RepeatFrames</div><div class="window-desc">Loop sequences</div><div class="window-size">204×184</div></div>
+    <div class="window-card"><div class="window-name">StretchFrames</div><div class="window-desc">Time-stretch</div><div class="window-size">204×172</div></div>
+    <div class="window-card"><div class="window-name">FrameOffset</div><div class="window-desc">Offset in time</div><div class="window-size">178×108</div></div>
+    <div class="window-card"><div class="window-name">SplitKFVal</div><div class="window-desc">Split values</div><div class="window-size">128×108</div></div>
+    <div class="window-card"><div class="window-name">AddItem</div><div class="window-desc">Add items</div><div class="window-size">204×270</div></div>
+    <div class="window-card"><div class="window-name">EditItem</div><div class="window-desc">Edit items</div><div class="window-size">204×270</div></div>
+    <div class="window-card"><div class="window-name">JumpToItem</div><div class="window-desc">Quick nav</div><div class="window-size">204×108</div></div>
+    <div class="window-card"><div class="window-name">Ungroup</div><div class="window-desc">Ungroup items</div><div class="window-size">228×216</div></div>
+    <div class="window-card"><div class="window-name">Import</div><div class="window-desc">Import anims</div><div class="window-size">204×312</div></div>
+    <div class="window-card"><div class="window-name">IdImport</div><div class="window-desc">Import by ID</div><div class="window-size">204×108</div></div>
+    <div class="window-card"><div class="window-name">ExportFiles</div><div class="window-desc">Export files</div><div class="window-size">187×126</div></div>
+    <div class="window-card"><div class="window-name">SaveAs</div><div class="window-desc">Save as new</div><div class="window-size">204×108</div></div>
+    <div class="window-card"><div class="window-name">CharacterInserter</div><div class="window-desc">Insert rigs</div><div class="window-size">470×228</div></div>
+    <div class="window-card"><div class="window-name">Welder</div><div class="window-desc">Weld parts</div><div class="window-size">285×190</div></div>
+    <div class="window-card"><div class="window-name">ColorPicker</div><div class="window-desc">Color select</div><div class="window-size">401×350</div></div>
+    <div class="window-card"><div class="window-name">CameraRef</div><div class="window-desc">Camera ref</div><div class="window-size">204×129</div></div>
+    <div class="window-card"><div class="window-name">CameraRotation</div><div class="window-desc">Camera rotate</div><div class="window-size">130×148</div></div>
+    <div class="window-card"><div class="window-name">EditTheme</div><div class="window-desc">Themes</div><div class="window-size">204×210</div></div>
+    <div class="window-card"><div class="window-name">Activate</div><div class="window-desc">Activation</div><div class="window-size">429×394</div></div>
+    <div class="window-card"><div class="window-name">Supporters</div><div class="window-desc">Credits</div><div class="window-size">290×200</div></div>
+    <div class="window-card"><div class="window-name">MsgBox</div><div class="window-desc">Dialogs</div><div class="window-size">224×128</div></div>
+  </div>
+</section>
+
+<!-- MENUS -->
+<section id="menus" class="section reveal">
+  <div class="section-header">
+    <div class="section-icon" style="color:var(--pink)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div>
+    <h2 class="section-title">Menus</h2>
+  </div>
+  <p class="section-desc">Location: <code>_g.AllMenus</code> — Items: <code>_g.AllMenuItems["Name"]</code></p>
+  <div class="table-wrap"><table><thead><tr><th>Menu</th><th>Description</th></tr></thead><tbody>
+    <tr><td><code>fileMain</code></td><td>File operations (save, load, export)</td></tr>
+    <tr><td><code>editMain</code></td><td>Edit operations (copy, paste, undo)</td></tr>
+    <tr><td><code>frameMain</code></td><td>Frame operations</td></tr>
+    <tr><td><code>keyframeMain</code></td><td>Keyframe operations</td></tr>
+    <tr><td><code>itemMain</code></td><td>Item operations</td></tr>
+    <tr><td><code>cameraMain</code></td><td>Camera controls</td></tr>
+    <tr><td><code>RigMenu</code></td><td>Rig-specific options</td></tr>
+    <tr><td><code>GizmoMenu</code></td><td>Transform gizmo options</td></tr>
+    <tr><td><code>HandlesMenu</code></td><td>Handle display options</td></tr>
+    <tr><td><code>EffectsMenu</code></td><td>Visual effects</td></tr>
+    <tr><td><code>other</code></td><td>Miscellaneous</td></tr>
+    <tr><td><code>h_theme</code></td><td>Theme header</td></tr>
+    <tr><td><code>theme_list</code></td><td>Available themes</td></tr>
+    <tr><td><code>split_menu</code></td><td>Split operations submenu</td></tr>
+  </tbody></table></div>
+</section>
+
+<!-- CONSTANTS -->
+<section id="constants" class="section reveal">
+  <div class="section-header">
+    <div class="section-icon" style="color:var(--yellow)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg></div>
+    <h2 class="section-title">Constants</h2>
+  </div>
+
+  <h3>Frame Limits</h3>
+  <div class="table-wrap"><table><thead><tr><th>Constant</th><th>Value</th><th>Description</th></tr></thead><tbody>
+    <tr><td><code>MIN_FRAMES</code></td><td><span class="type-badge tb-num">60</span></td><td>Minimum animation length</td></tr>
+    <tr><td><code>MAX_FRAMES</code></td><td><span class="type-badge tb-num">216000</span></td><td>Maximum (1h @ 60fps)</td></tr>
+    <tr><td><code>DEFAULT_FRAMES</code></td><td><span class="type-badge tb-num">300</span></td><td>Default (5s @ 60fps)</td></tr>
+  </tbody></table></div>
+
+  <h3>Timing</h3>
+  <div class="table-wrap"><table><thead><tr><th>Property</th><th>Default</th><th>Description</th></tr></thead><tbody>
+    <tr><td><code>DEFAULT_FPS</code></td><td><span class="type-badge tb-num">60</span></td><td>Default frames per second</td></tr>
+    <tr><td><code>current_fps</code></td><td><span class="type-badge tb-num">120</span></td><td>Current FPS (mutable)</td></tr>
+    <tr><td><code>DOUBLE_CLICC_TIME</code></td><td><span class="type-badge tb-num">0.5</span></td><td>Double-click threshold</td></tr>
+    <tr><td><code>time_offset</code></td><td><span class="type-badge tb-num">0</span></td><td>Playback time offset</td></tr>
+  </tbody></table></div>
+
+  <h3>Handle Settings</h3>
+  <div class="table-wrap"><table><thead><tr><th>Property</th><th>Default</th><th>Description</th></tr></thead><tbody>
+    <tr><td><code>show_part_handles</code></td><td><span class="type-badge tb-bool">true</span></td><td>Part handles</td></tr>
+    <tr><td><code>show_bone_cones</code></td><td><span class="type-badge tb-bool">false</span></td><td>Bone direction cones</td></tr>
+    <tr><td><code>show_bone_spheres</code></td><td><span class="type-badge tb-bool">false</span></td><td>Bone joint spheres</td></tr>
+    <tr><td><code>full_part_handles</code></td><td><span class="type-badge tb-bool">true</span></td><td>Full handle mode</td></tr>
+    <tr><td><code>scale_handles</code></td><td><span class="type-badge tb-bool">false</span></td><td>Scale handles</td></tr>
+    <tr><td><code>no_hide_handles</code></td><td><span class="type-badge tb-bool">false</span></td><td>Prevent auto-hide</td></tr>
+    <tr><td><code>bone_handle_size</code></td><td><span class="type-badge tb-num">1</span></td><td>Bone handle scale</td></tr>
+  </tbody></table></div>
+
+  <h3>Other</h3>
+  <div class="table-wrap"><table><thead><tr><th>Property</th><th>Value</th><th>Description</th></tr></thead><tbody>
+    <tr><td><code>ver</code></td><td><span class="type-badge tb-num">34000</span></td><td>Version number</td></tr>
+    <tr><td><code>ready</code></td><td><span class="type-badge tb-bool">true</span></td><td>Plugin loaded flag</td></tr>
+    <tr><td><code>use_last_ease</code></td><td><span class="type-badge tb-bool">true</span></td><td>Remember last easing</td></tr>
+    <tr><td><code>theme_key</code></td><td><span class="type-badge tb-str">"MoonAnimator2_Colors"</span></td><td>Theme storage key</td></tr>
+  </tbody></table></div>
+</section>
+
+<!-- CLASSES -->
+<section id="classes" class="section reveal">
+  <div class="section-header">
+    <div class="section-icon" style="color:var(--cyan)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+    <h2 class="section-title">Classes</h2>
+  </div>
+  <p class="section-desc">All via <code>require(_g.class.Name)</code>. Each has a <code>type</code> array showing its inheritance chain.</p>
+
+  <div class="alert alert-info"><div class="alert-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div><div><strong>Inheritance</strong> — <code>type</code> arrays read left-to-right as most-specific → root. Example: <code>MotorTrack.type = {"RigKeyframeTrack","KeyframeTrack","Track","LayerSystemItem","Object"}</code></div></div>
+
+  <h3 id="cls-core">Core / Base</h3>
+
+  <div class="class-card" data-class="Object"><div class="class-card-header" onclick="toggleClass(this)"><div><span class="class-card-name">Object</span></div><div class="class-card-chain"><span class="chain-self">Object</span> <span class="collapse-arrow">▶</span></div></div><div class="class-card-body"><p>Root base class. Provides theming hooks.</p><div class="method-row"><span class="method-name">.new()</span><span class="method-badge constructor">constructor</span></div><div class="method-row"><span class="method-name">:Destroy()</span><span class="method-desc">Release resources</span></div><div class="method-row"><span class="method-name">:AddPaintedItem()</span><span class="method-desc">Register for theme painting</span></div><div class="method-row"><span class="method-name">:RemovePaintedItem()</span><span class="method-desc">Unregister from painting</span></div><div class="method-row"><span class="method-name">:SetItemPaint()</span><span class="method-desc">Set paint properties</span></div><div class="method-row"><span class="method-name">.DEBUG</span><span class="method-desc">Debug flag (default: <code>false</code>)</span></div></div></div>
+
+  <div class="class-card" data-class="GuiElement"><div class="class-card-header" onclick="toggleClass(this)"><div><span class="class-card-name">GuiElement</span></div><div class="class-card-chain"><span class="chain-self">GuiElement</span> <span class="chain-sep">→</span> <span class="chain-item">Object</span> <span class="collapse-arrow">▶</span></div></div><div class="class-card-body"><p>Base for all GUI elements.</p><div class="method-row"><span class="method-name">.new()</span><span class="method-badge constructor">constructor</span></div></div></div>
+
+  <div class="class-card" data-class="Window"><div class="class-card-header" onclick="toggleClass(this)"><div><span class="class-card-name">Window</span></div><div class="class-card-chain"><span class="chain-self">Window</span> <span class="chain-sep">→</span> <span class="chain-item">Object</span> <span class="collapse-arrow">▶</span></div></div><div class="class-card-body"><p>Plugin window with drag, resize, focus, persistence.</p><div class="method-row"><span class="method-name">.new()</span><span class="method-badge constructor">constructor</span></div><div class="method-row"><span class="method-name">:Open()</span><span class="method-desc">Show window</span></div><div class="method-row"><span class="method-name">:OpenModal()</span><span class="method-desc">Show as modal</span></div><div class="method-row"><span class="method-name">:Close()</span><span class="method-desc">Hide</span></div><div class="method-row"><span class="method-name">:Toggle()</span><span class="method-desc">Toggle visibility</span></div><div class="method-row"><span class="method-name">:SetHidden(bool)</span><span class="method-desc">Set hidden state</span></div><div class="method-row"><span class="method-name">:SetTitle(str)</span><span class="method-desc">Set title</span></div><div class="method-row"><span class="method-name">:SetSize(x,y)</span><span class="method-desc">Set dimensions</span></div><div class="method-row"><span class="method-name">:GetFocus()</span><span class="method-desc">Bring to front</span></div><div class="method-row"><span class="method-name">:ReleaseFocus()</span><span class="method-desc">Release focus</span></div><div class="method-row"><span class="method-name">:CaptureMouse() / :ReleaseMouse()</span><span class="method-desc">Mouse capture</span></div><div class="method-row"><span class="method-name">:SetMouseEnabled(bool)</span><span class="method-desc">Mouse interaction</span></div><div class="method-row"><span class="method-name">:SaveValue(k,v) / :GetSavedValue(k)</span><span class="method-desc">Persistence</span></div><div class="method-row"><span class="method-name">:Destroy()</span><span class="method-desc">Clean up</span></div></div></div>
+
+  <div class="class-card" data-class="ObjectGroup"><div class="class-card-header" onclick="toggleClass(this)"><div><span class="class-card-name">ObjectGroup</span></div><div class="class-card-chain"><span class="chain-self">ObjectGroup</span> <span class="chain-sep">→</span> <span class="chain-item">Object</span> <span class="collapse-arrow">▶</span></div></div><div class="class-card-body"><p>Ordered collection with list operations.</p><div class="method-row"><span class="method-name">.new()</span><span class="method-badge constructor">constructor</span></div><div class="method-row"><span class="method-name">:Add / :Insert / :Remove / :RemoveAt</span><span class="method-desc">List mutations</span></div><div class="method-row"><span class="method-name">:Move / :IndexOf / :Contains</span><span class="method-desc">List queries</span></div><div class="method-row"><span class="method-name">:Iterate / :Clear / :Destroy</span><span class="method-desc">Iteration & cleanup</span></div></div></div>
+
+  <div class="class-card" data-class="ItemObject"><div class="class-card-header" onclick="toggleClass(this)"><div><span class="class-card-name">ItemObject</span></div><div class="class-card-chain"><span class="chain-self">ItemObject</span> <span class="chain-sep">→</span> <span class="chain-item">Object</span> <span class="collapse-arrow">▶</span></div></div><div class="class-card-body"><p>Top-level animation item — wraps rigs, models, cameras.</p><div class="method-row"><span class="method-name">.new() / .ItemFactory()</span><span class="method-badge constructor">constructor</span></div><div class="method-row"><span class="method-name">:AddProperty / :RemoveProperty</span><span class="method-desc">Property tracks</span></div><div class="method-row"><span class="method-name">:AddEventTrack / :RemoveEventTrack</span><span class="method-desc">Event tracks</span></div><div class="method-row"><span class="method-name">:AddRig / :RemoveRig</span><span class="method-desc">Rig management</span></div><div class="method-row"><span class="method-name">:ToggleTracks / :ToggleHandles</span><span class="method-desc">Visibility</span></div><div class="method-row"><span class="method-name">:ToggleOnionSkin / :ApplyOnionSkin / :ClearOnionSkin</span><span class="method-desc">Onion skin</span></div><div class="method-row"><span class="method-name">:add_pose / :remove_pose</span><span class="method-desc">Pose management</span></div><div class="method-row"><span class="method-name">:Serialize / :Deserialize / :Destroy</span><span class="method-desc">Save/load/cleanup</span></div></div></div>
+
+  <div class="class-card" data-class="Keyframe"><div class="class-card-header" onclick="toggleClass(this)"><div><span class="class-card-name">Keyframe</span></div><div class="class-card-chain"><span class="chain-self">Keyframe</span> <span class="chain-sep">→</span> <span class="chain-item">TrackItem</span> <span class="chain-sep">→</span> <span class="chain-item">Object</span> <span class="collapse-arrow">▶</span></div></div><div class="class-card-body"><p>Individual keyframe — stores value, easing, appearance.</p><div class="method-row"><span class="method-name">.new()</span><span class="method-badge constructor">constructor</span></div><div class="method-row"><span class="method-name">:GetTargetValue / :SetTargetValue</span><span class="method-desc">Value access</span></div><div class="method-row"><span class="method-name">:IterateTargetValues()</span><span class="method-desc">Multi-value iterate</span></div><div class="method-row"><span class="method-name">:GetEase / :SetEase</span><span class="method-desc">Easing config</span></div><div class="method-row"><span class="method-name">:_UpdateAppearance / :_SetSelect</span><span class="method-desc">Visual state</span></div><div class="method-row"><span class="method-name">:Serialize / :Deserialize / :Tableize / :Detableize</span><span class="method-desc">Persistence</span></div></div></div>
+
+  <!-- TRACKS -->
+  <h3 id="cls-tracks">Track Hierarchy</h3>
+  <div class="code-wrapper"><div class="code-header"><span class="code-lang">Hierarchy</span></div><div class="code-block"><pre><code><span class="sc">Object</span>
+  └─ <span class="sp">LayerSystemItem</span>
+       └─ <span class="sp">Track</span>
+            ├─ <span class="sp">KeyframeTrack</span>
+            │    ├─ <span class="sp">RigKeyframeTrack</span> → <span class="sf">MotorTrack</span>, <span class="sf">BoneTrack</span>
+            │    ├─ <span class="sp">DiscreteKeyframeTrack</span>
+            │    │    └─ <span class="sp">ActionTrack</span> → <span class="sf">Sound*</span>, <span class="sf">Humanoid*</span>, <span class="sf">Particle*</span>, <span class="sf">BasePart*</span>
+            │    ├─ <span class="sf">RigCFrameTrack</span>, <span class="sf">ModelCFrameTrack</span>, <span class="sf">BasePartCFrameTrack</span>
+            │    ├─ <span class="sf">Model{Scale,Color,Transparency,Reflectance}Track</span>
+            │    ├─ <span class="sf">Camera{CFrame,LookAtPart,AttachToPart}Track</span>
+            │    ├─ <span class="sf">LightingClockTimeTrack</span>, <span class="sf">TerrainColorTrack</span>
+            └─ <span class="sf">MarkerTrack</span></code></pre></div></div>
+
+  <div class="class-card" data-class="Track"><div class="class-card-header" onclick="toggleClass(this)"><div><span class="class-card-name">Track</span></div><div class="class-card-chain"><span class="chain-self">Track</span> <span class="chain-sep">→</span> <span class="chain-item">LayerSystemItem</span> <span class="chain-sep">→</span> <span class="chain-item">Object</span> <span class="collapse-arrow">▶</span></div></div><div class="class-card-body"><p>Base for all animation tracks.</p><div class="method-row"><span class="method-name">:AddTrackItem / :RemoveTrackItem / :MoveTrackItem</span><span class="method-desc">Item management</span></div><div class="method-row"><span class="method-name">:GetNextTrackItem / :GetPreviousTrackItem / :GetLastTrackItem</span><span class="method-desc">Navigation</span></div><div class="method-row"><span class="method-name">:GetLastFramePosition / :IsPosTaken / :from_frame</span><span class="method-desc">Frame queries</span></div><div class="method-row"><span class="method-name">:set_select / :SetEnabled / :_Update / :Destroy</span><span class="method-desc">State & lifecycle</span></div></div></div>
+
+  <div class="class-card" data-class="KeyframeTrack"><div class="class-card-header" onclick="toggleClass(this)"><div><span class="class-card-name">KeyframeTrack</span></div><div class="class-card-chain"><span class="chain-self">KeyframeTrack</span> <span class="chain-sep">→</span> <span class="chain-item">Track</span> <span class="chain-sep">→</span> … <span class="collapse-arrow">▶</span></div></div><div class="class-card-body"><p>Interpolated keyframe track with buffering.</p><div class="method-row"><span class="method-name">:AddKeyframe / :RemoveKeyframe / :MoveKeyframe</span><span class="method-desc">Keyframe CRUD</span></div><div class="method-row"><span class="method-name">:Buffer / :InvalidateBuffer</span><span class="method-desc">Playback buffering</span></div><div class="method-row"><span class="method-name">:get_prop / :set_prop</span><span class="method-desc">Property access</span></div><div class="method-row"><span class="method-name">:TargetValueIterator / :update_value / :init_values</span><span class="method-desc">Value management</span></div></div></div>
+
+  <div class="class-card" data-class="MarkerTrack"><div class="class-card-header" onclick="toggleClass(this)"><div><span class="class-card-name">MarkerTrack</span></div><div class="class-card-chain"><span class="chain-self">MarkerTrack</span> <span class="chain-sep">→</span> <span class="chain-item">Track</span> <span class="chain-sep">→</span> … <span class="collapse-arrow">▶</span></div></div><div class="class-card-body"><p>Timeline markers with code execution.</p><div class="method-row"><span class="method-name">:AddMarker / :RemoveMarker / :MoveMarker / :ResizeMarker</span><span class="method-desc">Marker CRUD</span></div><div class="method-row"><span class="method-name">:_Execute / :_RunCodeAt</span><span class="method-desc">Code execution</span></div></div></div>
+
+  <h4>ActionTrack Subclasses (all inherit ActionTrack → … → Object, only add <code>.new()</code>)</h4>
+  <div class="table-wrap"><table><thead><tr><th>Class</th><th>Description</th></tr></thead><tbody>
+    <tr><td><code>SoundPlayTrack / SoundPlayOnceTrack</code></td><td>Play sound (once/loop)</td></tr>
+    <tr><td><code>SoundPauseTrack / SoundResumeTrack / SoundStopTrack</code></td><td>Sound control</td></tr>
+    <tr><td><code>SoundSetTimeTrack</code></td><td>Set playback position</td></tr>
+    <tr><td><code>HumanoidAddAccessoryTrack / HumanoidRemoveAccessoriesTrack</code></td><td>Accessories</td></tr>
+    <tr><td><code>HumanoidEquipToolTrack / HumanoidUnequipToolsTrack</code></td><td>Tools</td></tr>
+    <tr><td><code>HumanoidPlayEmoteTrack / HumanoidPlayAnimationTrack</code></td><td>Animations</td></tr>
+    <tr><td><code>HumanoidJumpTrack / HumanoidSitTrack / HumanoidMoveTrack</code></td><td>Movement</td></tr>
+    <tr><td><code>HumanoidMoveToTrack / HumanoidChangeStateTrack / HumanoidTakeDamageTrack</code></td><td>State/actions</td></tr>
+    <tr><td><code>BasePartApplyMeshTrack / BasePartApplyTextureTrack</code></td><td>Mesh & texture</td></tr>
+    <tr><td><code>ParticleEmitterEmitTrack / ParticleEmitterClearTrack</code></td><td>Particles</td></tr>
+  </tbody></table></div>
+
+  <!-- UI -->
+  <h3 id="cls-ui">UI Components</h3>
+  <p>All inherit <code>GuiElement → Object</code>:</p>
+  <div class="table-wrap"><table><thead><tr><th>Class</th><th>Key Methods</th></tr></thead><tbody>
+    <tr><td><code>Button</code></td><td>new, SetActive, set_highlight</td></tr>
+    <tr><td><code>Radio</code></td><td>new, Set</td></tr>
+    <tr><td><code>Check</code></td><td>new, Set, SetEnabled</td></tr>
+    <tr><td><code>Slider</code></td><td>new, Set, _DragBegin/Changed/Ended</td></tr>
+    <tr><td><code>Tabs</code></td><td>new, ShowTab</td></tr>
+    <tr><td><code>SelectGrid</code></td><td>new, Set, SetEnabled</td></tr>
+    <tr><td><code>Graph</code></td><td>new, DrawLine, SetSliderPercent</td></tr>
+    <tr><td><code>ValueTitle / ValueLabel</code></td><td>new, Set</td></tr>
+    <tr><td><code>ImageList</code></td><td>new, Set, SetList, _Navigate</td></tr>
+    <tr><td><code>FileList</code></td><td>new, SetList</td></tr>
+    <tr><td><code>MoonScroll</code></td><td>new, SetCanvasSize/Position, GetCanvasLines, SetLineNumber/Count</td></tr>
+    <tr><td><code>Checklist</code></td><td>new, SetList, SetChecked, GetAllChecked/Unchecked, SelectAll/None</td></tr>
+    <tr><td><code>Menu</code></td><td>new, Show, Close, AddDivider</td></tr>
+    <tr><td><code>MenuItem</code></td><td>new, set_check, _SetPrice, _SetDisabled</td></tr>
+    <tr><td><code>MenuBar</code></td><td>new, MenuBarFactory, Close, SetEnabled</td></tr>
+  </tbody></table></div>
+
+  <!-- INPUTS -->
+  <h3 id="cls-input">Input Classes</h3>
+  <p>Base: <code>InputBox → GuiElement → Object</code> — all have Process, Set, SetEnabled:</p>
+  <div class="table-wrap"><table><thead><tr><th>Class</th><th>Extra</th></tr></thead><tbody>
+    <tr><td><code>TextInput / NumberInput / AngleInput / VectorInput / ColorInput / MultiInput</code></td><td>Process</td></tr>
+    <tr><td><code>TimeInput</code></td><td>Process, get_fps</td></tr>
+    <tr><td><code>CFrameInput</code></td><td>Process, Set, SetEnabled, value_changed (GuiElement→Object)</td></tr>
+    <tr><td><code>EaseInput</code></td><td>Process, Set, SetEnabled, refresh_value, refresh_dir (GuiElement→Object)</td></tr>
+    <tr><td><code>ListInput</code></td><td>Process, SetList, SetEnabled (MAX_ITEMS=6)</td></tr>
+    <tr><td><code>InstanceInput</code></td><td>Process, Set, SetEnabled (GuiElement→Object)</td></tr>
+    <tr><td><code>InputList</code></td><td>SetList, GetValueDictionary, SetEnabled (GuiElement→Object)</td></tr>
+    <tr><td><code>KeyValueList</code></td><td>SetList, AddListItem, RemoveListItem (GuiElement→Object)</td></tr>
+  </tbody></table></div>
+
+  <!-- SYSTEM -->
+  <h3 id="cls-system">System Classes</h3>
+
+  <div class="class-card" data-class="PlaybackHandler"><div class="class-card-header" onclick="toggleClass(this)"><div><span class="class-card-name">PlaybackHandler</span></div><div class="class-card-chain"><span class="chain-self">PlaybackHandler</span> <span class="chain-sep">→</span> <span class="chain-item">Object</span> <span class="collapse-arrow">▶</span></div></div><div class="class-card-body"><p>Animation playback — play, stop, loop, scrubbing.</p><div class="method-row"><span class="method-name">:Play / :Stop / :TogglePlayback</span><span class="method-desc">Playback control</span></div><div class="method-row"><span class="method-name">:SetLoop(bool)</span><span class="method-desc">Loop mode</span></div><div class="method-row"><span class="method-name">:SetPlayArea()</span><span class="method-desc">Playback region</span></div><div class="method-row"><span class="method-name">:UpdateTracks / :BufferKeyframeTracks</span><span class="method-desc">Track updates</span></div></div></div>
+
+  <div class="class-card" data-class="SelectionHandler"><div class="class-card-header" onclick="toggleClass(this)"><div><span class="class-card-name">SelectionHandler</span></div><div class="class-card-chain"><span class="chain-self">SelectionHandler</span> <span class="chain-sep">→</span> <span class="chain-item">Object</span> <span class="collapse-arrow">▶</span></div></div><div class="class-card-body"><p>Selection management — click, box-select, bulk operations.</p><div class="method-row"><span class="method-name">:SelectAll / :DeselectAll</span><span class="method-desc">Bulk selection</span></div><div class="method-row"><span class="method-name">:RegisterTrack / :RegisterTrackItem / :RegisterDivider</span><span class="method-desc">Registration</span></div><div class="method-row"><span class="method-name">:SetTrackItemSelection / :AddTrackItemSelection</span><span class="method-desc">Selection control</span></div><div class="method-row"><span class="method-name">:GetFromToSelectionData</span><span class="method-desc">Range data</span></div></div></div>
+
+  <div class="class-card" data-class="LayerSystem"><div class="class-card-header" onclick="toggleClass(this)"><div><span class="class-card-name">LayerSystem</span></div><div class="class-card-chain"><span class="chain-self">LayerSystem</span> <span class="chain-sep">→</span> <span class="chain-item">GuiElement</span> <span class="chain-sep">→</span> <span class="chain-item">Object</span> <span class="collapse-arrow">▶</span></div></div><div class="class-card-body"><p>Core timeline — zoom, scroll, frame calculations, file I/O.</p><div class="method-row"><span class="method-name">:OpenFile / :SaveFile / :Reset</span><span class="method-desc">File operations</span></div><div class="method-row"><span class="method-name">:SetFPS / :SetTimelineLength</span><span class="method-desc">Timeline config</span></div><div class="method-row"><span class="method-name">:SetZoom{Frames,ByFrames,Percentage}</span><span class="method-desc">Zoom control</span></div><div class="method-row"><span class="method-name">:SetScroll{ByFrames,Percentage}</span><span class="method-desc">Scroll control</span></div><div class="method-row"><span class="method-name">:GetFrameAt{MousePosition,XPosition,XPositionOnTimeline}</span><span class="method-desc">Frame queries</span></div><div class="method-row"><span class="method-name">:GetLineAt{MousePosition,YPosition,YPositionOnList}</span><span class="method-desc">Line queries</span></div></div></div>
+
+  <div class="class-card" data-class="LayerHandler"><div class="class-card-header" onclick="toggleClass(this)"><div><span class="class-card-name">LayerHandler</span></div><div class="class-card-chain"><span class="chain-self">LayerHandler</span> <span class="chain-sep">→</span> <span class="chain-item">Object</span> <span class="collapse-arrow">▶</span></div></div><div class="class-card-body"><p>Item ordering and grouping in the layer list.</p><div class="method-row"><span class="method-name">:AddItemObject / :RemoveItemObject / :InsertItemObject / :MoveItemObject</span><span class="method-desc">Item management</span></div><div class="method-row"><span class="method-name">:SetActiveItemObject / :GlobalIndexOf / :ScrollToLSI</span><span class="method-desc">Navigation</span></div><div class="method-row"><span class="method-name">:GetLastKeyframePosition</span><span class="method-desc">Last frame</span></div></div></div>
+</section>
+
+<!-- THEMER -->
+<section id="themer" class="section reveal">
+  <div class="section-header">
+    <div class="section-icon" style="color:var(--pink)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 000 20z" fill="currentColor" opacity=".3"/></svg></div>
+    <h2 class="section-title">Themer</h2>
+  </div>
+  <p class="section-desc">Location: <code>_g.Themer</code> — All UI colors and themes.</p>
+  <div class="table-wrap"><table><thead><tr><th>Property / Method</th><th>Description</th></tr></thead><tbody>
+    <tr><td><code>._Theme</code></td><td>Current theme (Color3 values)</td></tr>
+    <tr><td><code>._BuiltInThemes</code></td><td>All built-in themes ({R,G,B} arrays)</td></tr>
+    <tr><td><code>._PaintMap / ._PaintedItemMap</code></td><td>Theme mapping and registered elements</td></tr>
+    <tr><td><code>:SetTheme(name)</code></td><td>Apply theme by name</td></tr>
+    <tr><td><code>:_paintAll()</code></td><td>Repaint all UI elements</td></tr>
+  </tbody></table></div>
+  <div class="alert alert-info"><div class="alert-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div><div><strong>Color format:</strong> Built-in themes use <code>{R,G,B}</code> arrays (0–255). Runtime <code>_Theme</code> uses Color3. Convert: <code>Color3.fromRGB(v[1],v[2],v[3])</code></div></div>
+  <div class="card-grid">
+    <div class="card"><div class="card-title" style="color:var(--green)">Free Themes</div><div class="card-desc">Default, Dark, Light, and others</div></div>
+    <div class="card"><div class="card-title" style="color:var(--pink)">Paid Themes</div><div class="card-desc">Taiga, Blush, Blonde, Wheat, Gaia, Ares, Aqua, Energy, Digital, Fuchsia</div></div>
+  </div>
+</section>
+
+<!-- MODDING -->
+<section id="modding" class="section reveal">
+  <div class="section-header">
+    <div class="section-icon" style="color:var(--accent-light)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+    <h2 class="section-title">Plugin Modding</h2>
+  </div>
+  <p class="section-desc">Save as Local Plugin in Roblox Studio (right-click → "Save as Local Plugin…").</p>
+  <div class="alert alert-tip"><div class="alert-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div><strong>Always wait:</strong> <code>repeat task.wait(0.5) until _G.MoonGlobal and _G.MoonGlobal.ready</code></div></div>
+
+  <h3 id="custom-easings">Custom Easings</h3>
+  <div class="code-wrapper"><div class="code-header"><span class="code-lang">CustomEasings.lua</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy</button></div><div class="code-block"><pre><code><span class="sc">-- Save as Local Plugin</span>
+<span class="sk">local</span> EASINGS = {
+    { name=<span class="ss">"Soft"</span>, color=<span class="sf">Color3.fromRGB</span>(<span class="sn">86</span>,<span class="sn">180</span>,<span class="sn">233</span>), power=<span class="sn">1.5</span> },
+    { name=<span class="ss">"Tert"</span>, color=<span class="sf">Color3.fromRGB</span>(<span class="sn">230</span>,<span class="sn">159</span>,<span class="sn">0</span>),  power=<span class="sn">2.5</span> },
+}
+
+<span class="sk">local function</span> <span class="sf">makeIn</span>(p)    <span class="sk">return function</span>(t) <span class="sk">return</span> t^p <span class="sk">end end</span>
+<span class="sk">local function</span> <span class="sf">makeOut</span>(p)   <span class="sk">return function</span>(t) <span class="sk">return</span> <span class="sn">1</span>-(<span class="sn">1</span>-t)^p <span class="sk">end end</span>
+<span class="sk">local function</span> <span class="sf">makeInOut</span>(p) <span class="sk">return function</span>(t)
+    <span class="sk">if</span> t &lt; <span class="sn">.5</span> <span class="sk">then return</span> ((<span class="sn">2</span>*t)^p)/<span class="sn">2</span>
+    <span class="sk">else return</span> <span class="sn">1</span>-((-<span class="sn">2</span>*t+<span class="sn">2</span>)^p)/<span class="sn">2</span> <span class="sk">end end end</span>
+<span class="sk">local function</span> <span class="sf">makeOutIn</span>(p) <span class="sk">return function</span>(t)
+    <span class="sk">if</span> t &lt; <span class="sn">.5</span> <span class="sk">then return</span> (<span class="sn">1</span>-(<span class="sn">1</span>-<span class="sn">2</span>*t)^p)/<span class="sn">2</span>
+    <span class="sk">else return</span> ((<span class="sn">2</span>*t-<span class="sn">1</span>)^p+<span class="sn">1</span>)/<span class="sn">2</span> <span class="sk">end end end</span>
+
+<span class="sk">local</span> _g
+<span class="sk">for</span> i=<span class="sn">1</span>,<span class="sn">60</span> <span class="sk">do</span>
+    _g=<span class="sg">_G</span>.MoonGlobal
+    <span class="sk">if</span> _g <span class="sk">and</span> _g.EasingFunctions <span class="sk">and</span> _g.class <span class="sk">then break end</span>
+    <span class="sk">if</span> i==<span class="sn">60</span> <span class="sk">then return end</span>
+    <span class="sf">task.wait</span>(<span class="sn">.5</span>)
+<span class="sk">end</span>
+<span class="sk">local</span> Ease=<span class="sf">require</span>(_g.class.Ease)
+
+<span class="sk">for</span> _,e <span class="sk">in</span> <span class="sf">ipairs</span>(EASINGS) <span class="sk">do</span>
+    _g.EasingFunctions[e.name..<span class="ss">"In"</span>]=<span class="sf">makeIn</span>(e.power)
+    _g.EasingFunctions[e.name..<span class="ss">"Out"</span>]=<span class="sf">makeOut</span>(e.power)
+    _g.EasingFunctions[e.name..<span class="ss">"InOut"</span>]=<span class="sf">makeInOut</span>(e.power)
+    _g.EasingFunctions[e.name..<span class="ss">"OutIn"</span>]=<span class="sf">makeOutIn</span>(e.power)
+    Ease.EASE_DATA[e.name]={Color=e.color,Params={Direction=<span class="sk">true</span>}}
+    <span class="sf">table.insert</span>(Ease.EASE_LIST,{e.name,e.name})
+<span class="sk">end</span>
+<span class="sf">print</span>(<span class="ss">"[CustomEasings]"</span>,#EASINGS,<span class="ss">"loaded"</span>)</code></pre></div></div>
+
+  <h3 id="theme-unlock">Theme Unlocker</h3>
+  <div class="code-wrapper"><div class="code-header"><span class="code-lang">ThemeUnlocker.lua</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy</button></div><div class="code-block"><pre><code><span class="sc">-- Save as Local Plugin</span>
+<span class="sk">local</span> _g
+<span class="sk">for</span> i=<span class="sn">1</span>,<span class="sn">60</span> <span class="sk">do</span>
+    _g=<span class="sg">_G</span>.MoonGlobal
+    <span class="sk">if</span> _g <span class="sk">and</span> _g.Themer <span class="sk">and</span> _g.AllMenuItems <span class="sk">then break end</span>
+    <span class="sk">if</span> i==<span class="sn">60</span> <span class="sk">then return end</span>
+    <span class="sf">task.wait</span>(<span class="sn">.5</span>)
+<span class="sk">end</span>
+<span class="sf">task.wait</span>(<span class="sn">1</span>)
+
+<span class="sk">local</span> T=_g.Themer
+<span class="sk">local</span> PAID={<span class="ss">"Taiga"</span>,<span class="ss">"Blush"</span>,<span class="ss">"Blonde"</span>,<span class="ss">"Wheat"</span>,<span class="ss">"Gaia"</span>,<span class="ss">"Ares"</span>,<span class="ss">"Aqua"</span>,<span class="ss">"Energy"</span>,<span class="ss">"Digital"</span>,<span class="ss">"Fuchsia"</span>}
+
+<span class="sk">local function</span> <span class="sf">applyTheme</span>(name)
+    <span class="sk">local</span> src=T._BuiltInThemes[name]
+    <span class="sk">if not</span> src <span class="sk">then return false end</span>
+    <span class="sk">for</span> k,v <span class="sk">in</span> <span class="sf">pairs</span>(src) <span class="sk">do</span>
+        <span class="sk">if</span> <span class="sf">typeof</span>(v)==<span class="ss">"table"</span> <span class="sk">and</span> <span class="sf">typeof</span>(v[<span class="sn">1</span>])==<span class="ss">"number"</span>
+           <span class="sk">and</span> <span class="sf">typeof</span>(v[<span class="sn">2</span>])==<span class="ss">"number"</span> <span class="sk">and</span> <span class="sf">typeof</span>(v[<span class="sn">3</span>])==<span class="ss">"number"</span> <span class="sk">then</span>
+            <span class="sf">rawset</span>(T._Theme,k,<span class="sf">Color3.fromRGB</span>(v[<span class="sn">1</span>],v[<span class="sn">2</span>],v[<span class="sn">3</span>]))
+        <span class="sk">end end</span>
+    <span class="sf">pcall</span>(<span class="sk">function</span>() T:<span class="sf">_paintAll</span>() <span class="sk">end</span>)
+    <span class="sf">pcall</span>(<span class="sk">function</span>() _g.plugin:<span class="sf">SetSetting</span>(_g.theme_key,name) <span class="sk">end</span>)
+    <span class="sk">return true</span>
+<span class="sk">end</span>
+
+<span class="sk">for</span> _,name <span class="sk">in</span> <span class="sf">ipairs</span>(PAID) <span class="sk">do</span>
+    <span class="sk">for</span> _,pfx <span class="sk">in</span> <span class="sf">ipairs</span>({<span class="ss">"Theme_"</span>,<span class="ss">"Activate_Theme_"</span>}) <span class="sk">do</span>
+        <span class="sk">local</span> item=_g.AllMenuItems[pfx..name]
+        <span class="sk">if not</span> item <span class="sk">then continue end</span>
+        <span class="sk">if</span> item.price_frame <span class="sk">then</span> item.price_frame.Visible=<span class="sk">false end</span>
+        <span class="sk">local</span> inp=item.middle_ui <span class="sk">and</span> item.middle_ui:<span class="sf">FindFirstChild</span>(<span class="ss">"Input"</span>)
+        <span class="sk">if</span> inp <span class="sk">and</span> inp:<span class="sf">IsA</span>(<span class="ss">"GuiButton"</span>) <span class="sk">then</span>
+            inp.MouseButton1Click:<span class="sf">Connect</span>(<span class="sk">function</span>() <span class="sf">applyTheme</span>(name) <span class="sk">end</span>)
+        <span class="sk">end end end</span>
+<span class="sf">print</span>(<span class="ss">"[ThemeUnlocker]"</span>,#PAID,<span class="ss">"unlocked"</span>)</code></pre></div></div>
+
+  <h3>Tips</h3>
+  <div class="table-wrap"><table><thead><tr><th>Tip</th><th>Details</th></tr></thead><tbody>
+    <tr><td><strong>Wait for Ready</strong></td><td>Check <code>_g.ready == true</code> before UI access</td></tr>
+    <tr><td><strong>Settings</strong></td><td><code>_g.plugin:SetSetting(k,v)</code> / <code>:GetSetting(k)</code></td></tr>
+    <tr><td><strong>Error Safety</strong></td><td>Wrap in <code>pcall()</code> — internals can change</td></tr>
+    <tr><td><strong>Window UI</strong></td><td><code>_g.Windows.Name.UI</code> → Frame; <code>.g_e</code> → inputs</td></tr>
+    <tr><td><strong>Menu Items</strong></td><td><code>_g.AllMenuItems["Name"].middle_ui.Input</code></td></tr>
+    <tr><td><strong>Dump Class</strong></td><td><code>for k,v in pairs(require(_g.class.X)) do print(k,v) end</code></td></tr>
+  </tbody></table></div>
+</section>
+
+</div></main>
+
 <footer class="footer">
-  <p>
-    <strong>Moon Animator 2 API Documentation</strong> — Unofficial Reference<br>
-    Based on version <strong>34000</strong> • API structure may change between updates
-  </p>
-  <p style="margin-top: 12px;">
-    Moon Animator 2 is created by <a href="https://www.roblox.com/users/27747206/profile" target="_blank">xsixx</a> •
-    This documentation is community-made for plugin developers
-  </p>
-  <p style="margin-top: 12px; color: var(--text-3);">
-    Made with 💜 for the Roblox animation community
-  </p>
+  <p><strong>Moon Animator 2 API Documentation</strong> — Unofficial Reference<br>Version <strong>34000</strong> • Data via runtime introspection • API may change</p>
+  <p style="margin-top:12px">Moon Animator 2 by <a href="https://www.roblox.com/users/27747206/profile" target="_blank">xsixx</a> • Community docs for plugin developers</p>
 </footer>
 
 <script>
-// Copy code functionality
-function copyCode(btn) {
-  const codeBlock = btn.closest('.code-header').nextElementSibling;
-  const code = codeBlock.querySelector('code').innerText;
-  
-  navigator.clipboard.writeText(code).then(() => {
-    const originalText = btn.innerHTML;
-    btn.innerHTML = `
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <polyline points="20 6 9 17 4 12"/>
-      </svg>
-      Copied!
-    `;
-    btn.style.background = 'var(--type-function)';
-    btn.style.color = 'white';
-    btn.style.borderColor = 'var(--type-function)';
-    
-    setTimeout(() => {
-      btn.innerHTML = originalText;
-      btn.style.background = '';
-      btn.style.color = '';
-      btn.style.borderColor = '';
-    }, 2000);
+// ===== COPY CODE =====
+function copyCode(btn){
+  const b=btn.closest('.code-wrapper').querySelector('code');
+  navigator.clipboard.writeText(b.innerText).then(()=>{
+    const o=btn.innerHTML;
+    btn.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+    btn.style.cssText='background:var(--green);color:#000;border-color:var(--green)';
+    setTimeout(()=>{btn.innerHTML=o;btn.style.cssText=''},1800);
   });
 }
 
-// Active nav link on scroll
-const sections = document.querySelectorAll('.section');
-const navLinks = document.querySelectorAll('.nav-link');
-const sidebarLinks = document.querySelectorAll('.sidebar-link');
+// ===== TOGGLE CLASS CARDS =====
+function toggleClass(h){
+  const b=h.nextElementSibling,a=h.querySelector('.collapse-arrow');
+  b.classList.toggle('open');a.classList.toggle('open');
+}
 
-window.addEventListener('scroll', () => {
-  let current = '';
-  
-  sections.forEach(section => {
-    const sectionTop = section.offsetTop;
-    if (scrollY >= sectionTop - 100) {
-      current = section.getAttribute('id');
-    }
-  });
-  
-  navLinks.forEach(link => {
-    link.classList.remove('active');
-    if (link.getAttribute('href') === '#' + current) {
-      link.classList.add('active');
-    }
-  });
-  
-  sidebarLinks.forEach(link => {
-    link.classList.remove('active');
-    if (link.getAttribute('href') === '#' + current) {
-      link.classList.add('active');
-    }
-  });
-});
+// ===== SCROLL PROGRESS =====
+const prog=document.getElementById('scrollProgress');
+window.addEventListener('scroll',()=>{
+  const p=window.scrollY/(document.body.scrollHeight-window.innerHeight)*100;
+  prog.style.width=p+'%';
+},{ passive:true });
 
-// Smooth scroll for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function(e) {
+// ===== NAV SCROLL STATE =====
+const nav=document.getElementById('nav');
+const backTop=document.getElementById('backTop');
+let lastY=0;
+window.addEventListener('scroll',()=>{
+  nav.classList.toggle('scrolled',window.scrollY>50);
+  backTop.classList.toggle('visible',window.scrollY>500);
+  lastY=window.scrollY;
+},{ passive:true });
+
+// ===== ACTIVE SECTION =====
+const secs=document.querySelectorAll('.section');
+const nls=document.querySelectorAll('.nav-link');
+const sls=document.querySelectorAll('.sidebar-link');
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const id=e.target.id;
+      nls.forEach(l=>l.classList.toggle('active',l.getAttribute('href')==='#'+id));
+      sls.forEach(l=>l.classList.toggle('active',l.getAttribute('href')==='#'+id));
+    }
+  });
+},{rootMargin:'-20% 0px -70% 0px'});
+secs.forEach(s=>io.observe(s));
+
+// ===== REVEAL ON SCROLL =====
+const ro=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');ro.unobserve(e.target)}});
+},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+
+// ===== SMOOTH SCROLL =====
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
     e.preventDefault();
-    const target = document.querySelector(this.getAttribute('href'));
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth' });
-    }
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t)t.scrollIntoView({behavior:'smooth'});
   });
 });
-</script>
 
+// ===== COMMAND PALETTE =====
+const cmdOverlay=document.getElementById('cmdOverlay');
+const cmdPalette=document.getElementById('cmdPalette');
+const cmdInput=document.getElementById('cmdInput');
+const cmdResults=document.getElementById('cmdResults');
+let cmdOpen=false,cmdIdx=-1;
+
+function openPalette(){
+  cmdOpen=true;cmdOverlay.classList.add('open');cmdPalette.classList.add('open');
+  cmdInput.value='';cmdInput.focus();cmdIdx=-1;
+  cmdResults.innerHTML='<div class="cmd-empty">Start typing to search…</div>';
+}
+function closePalette(){
+  cmdOpen=false;cmdOverlay.classList.remove('open');cmdPalette.classList.remove('open');
+}
+
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();cmdOpen?closePalette():openPalette()}
+  if(e.key==='Escape'&&cmdOpen)closePalette();
+  if(cmdOpen){
+    const items=cmdResults.querySelectorAll('.cmd-result');
+    if(e.key==='ArrowDown'){e.preventDefault();cmdIdx=Math.min(cmdIdx+1,items.length-1);updateSel(items)}
+    if(e.key==='ArrowUp'){e.preventDefault();cmdIdx=Math.max(cmdIdx-1,0);updateSel(items)}
+    if(e.key==='Enter'&&cmdIdx>=0&&items[cmdIdx]){items[cmdIdx].click()}
+  }
+});
+function updateSel(items){items.forEach((it,i)=>it.classList.toggle('selected',i===cmdIdx))}
+
+// Build index
+const idx=[];
+document.querySelectorAll('.class-card').forEach(c=>{
+  const n=c.dataset.class;
+  const ch=c.querySelector('.class-card-chain')?.textContent||'';
+  const ms=[];c.querySelectorAll('.method-name').forEach(m=>ms.push(m.textContent));
+  const d=c.querySelector('.class-card-body p')?.textContent||'';
+  idx.push({n,ch,ms,d,el:c,type:'class'});
+});
+document.querySelectorAll('table tbody tr').forEach(r=>{
+  const c=Array.from(r.querySelectorAll('td'));
+  if(c.length>=2){
+    const k=c[0].textContent.trim(),v=c.slice(1).map(x=>x.textContent.trim()).join(' ');
+    idx.push({n:k,ch:'',ms:[],d:v,el:r.closest('section'),type:'prop'});
+  }
+});
+
+cmdInput.addEventListener('input',()=>{
+  const q=cmdInput.value.toLowerCase().trim();
+  cmdIdx=-1;
+  if(!q){cmdResults.innerHTML='<div class="cmd-empty">Start typing to search…</div>';return}
+  const m=idx.filter(i=>i.n.toLowerCase().includes(q)||i.d.toLowerCase().includes(q)||i.ms.some(x=>x.toLowerCase().includes(q)));
+  if(!m.length){cmdResults.innerHTML='<div class="cmd-empty">No results for "'+q+'"</div>';return}
+  const seen=new Set();
+  cmdResults.innerHTML=m.slice(0,15).map(r=>{
+    if(seen.has(r.n))return'';seen.add(r.n);
+    const ic=r.type==='class'?'C':'P';
+    return`<div class="cmd-result" onclick="jumpTo('${r.n}')"><div class="cmd-result-icon">${ic}</div><div class="cmd-result-text"><div class="cmd-result-name">${r.n}</div><div class="cmd-result-desc">${(r.d||'').slice(0,60)}</div></div></div>`;
+  }).join('');
+});
+
+function jumpTo(n){
+  closePalette();
+  const c=document.querySelector(`.class-card[data-class="${n}"]`);
+  if(c){
+    c.scrollIntoView({behavior:'smooth',block:'center'});
+    const b=c.querySelector('.class-card-body'),a=c.querySelector('.collapse-arrow');
+    if(!b.classList.contains('open')){b.classList.add('open');a.classList.add('open')}
+    c.style.borderColor='var(--accent)';c.style.boxShadow='0 0 30px rgba(168,85,247,.15)';
+    setTimeout(()=>{c.style.borderColor='';c.style.boxShadow=''},2500);
+  }else{
+    const s=document.getElementById(n);if(s)s.scrollIntoView({behavior:'smooth'});
+  }
+}
+</script>
 </body>
 </html>
